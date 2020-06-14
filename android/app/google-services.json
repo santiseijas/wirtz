@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "409675921403",
+    "firebase_url": "https://beeto-f3425.firebaseio.com",
+    "project_id": "beeto-f3425",
+    "storage_bucket": "beeto-f3425.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:409675921403:android:d18282f12622eab97abd5e",
+        "android_client_info": {
+          "package_name": "com.example.proyecto_clase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "409675921403-3nt1455fabqa197brb1tkp3qtmue5ast.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPAm8y5JqnteA4fbajd-3w7zMXlw20Pb4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "409675921403-3nt1455fabqa197brb1tkp3qtmue5ast.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:409675921403:android:2b7f34065ced87677abd5e",
+        "android_client_info": {
+          "package_name": "com.santiseijas.beeto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "409675921403-3nt1455fabqa197brb1tkp3qtmue5ast.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPAm8y5JqnteA4fbajd-3w7zMXlw20Pb4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "409675921403-3nt1455fabqa197brb1tkp3qtmue5ast.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:409675921403:android:4709ff758e8de2de7abd5e",
+        "android_client_info": {
+          "package_name": "com.santiseijas.wirtz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "409675921403-3nt1455fabqa197brb1tkp3qtmue5ast.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPAm8y5JqnteA4fbajd-3w7zMXlw20Pb4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "409675921403-3nt1455fabqa197brb1tkp3qtmue5ast.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
