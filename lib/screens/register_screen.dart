@@ -1,14 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_progress_button/flutter_progress_button.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wirtz/bloc/authentication/bloc.dart';
 import 'package:wirtz/bloc/register/bloc.dart';
 import 'package:wirtz/bloc/register/register_bloc.dart';
 import 'package:wirtz/widgets/login_button.dart';
 import 'package:wirtz/widgets/password_form.dart';
-import 'package:wirtz/widgets/register_button.dart';
 
 import '../models/user_repository.dart';
 

@@ -1,10 +1,11 @@
 import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:wirtz/models/marker_model.dart';
 import 'package:wirtz/services/locator.dart';
+
 import '../services/api.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Model extends ChangeNotifier {
   Api _api = locator<Api>();

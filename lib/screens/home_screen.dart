@@ -6,11 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:map_launcher/map_launcher.dart';
-import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:wirtz/models/marker_model.dart';
-import 'package:wirtz/models/model.dart';
-import 'package:wirtz/services/api.dart';
 import 'package:wirtz/widgets/drawer.dart';
 
 class HomePage extends StatefulWidget {
@@ -49,7 +45,7 @@ class HomePageState extends State<HomePage> {
       myIcon2 = onValue;
     });
     super.initState();
-    _fabHeight = _initFabHeight;
+    this._fabHeight = _initFabHeight;
   }
 
   populateClients() {
@@ -134,7 +130,7 @@ class HomePageState extends State<HomePage> {
                     topLeft: Radius.circular(50.0),
                     topRight: Radius.circular(50.0)),
                 onPanelSlide: (double pos) => setState(() {
-                  _fabHeight = pos * (_panelHeightOpen - _panelHeightClosed) +
+                  this._fabHeight = pos * (_panelHeightOpen - _panelHeightClosed) +
                       _initFabHeight;
                 }),
               ),

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,9 +6,8 @@ import 'package:wirtz/bloc/simple_bloc_delegate.dart';
 import 'package:wirtz/models/user_repository.dart';
 import 'package:wirtz/screens/home_screen.dart';
 import 'package:wirtz/screens/intro.dart';
-import 'package:wirtz/screens/login_screen.dart';
+
 import 'bloc/authentication/bloc.dart';
-import 'screens/splash_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
