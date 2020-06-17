@@ -1,11 +1,16 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:map_launcher/map_launcher.dart';
+import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:wirtz/models/marker_model.dart';
+import 'package:wirtz/models/model.dart';
+import 'package:wirtz/services/api.dart';
 import 'package:wirtz/widgets/drawer.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,7 +24,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   Completer<GoogleMapController> _controller = Completer();
-  final Map<String, Marker> _markers = {};
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   Position position;
   BitmapDescriptor myIcon;
   BitmapDescriptor myIcon2;
@@ -31,18 +36,49 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     _getLocation();
+    populateClients();
+    print(markers.values.toString());
     BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), 'assets/images/destination_map_marker.png')
+            ImageConfiguration(), 'assets/images/destination_map_marker.png')
         .then((onValue) {
       myIcon = onValue;
     });
     BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), 'assets/images/pin2.png')
+            ImageConfiguration(), 'assets/images/pin2.png')
         .then((onValue) {
       myIcon2 = onValue;
     });
     super.initState();
     _fabHeight = _initFabHeight;
+  }
+
+  populateClients() {
+    Firestore.instance.collection('markers').getDocuments().then((docs) {
+      if (docs.documents.isNotEmpty) {
+        for (int i = 0; i < docs.documents.length; ++i) {
+          initMarker(docs.documents[i].data, docs.documents[i].documentID);
+        }
+      }
+    });
+  }
+
+  initMarker(request, requestId) {
+    var markeridVal = requestId;
+    final MarkerId markerId = MarkerId(markeridVal);
+    final Marker marker = Marker(
+      consumeTapEvents: true,
+      icon: myIcon,
+      infoWindow: InfoWindow(
+        title: 'PlatformMarker',
+        snippet: "Hi I'm a Platform Marker",
+      ),
+      markerId: markerId,
+      position: LatLng(request['coord'].latitude, request['coord'].longitude),
+    );
+    setState(() {
+      markers[markerId] = marker;
+      print(markerId);
+    });
   }
 
   @override
@@ -78,9 +114,9 @@ class HomePageState extends State<HomePage> {
             actions: <Widget>[
               IconButton(
                   icon: Icon(
-                    Icons.message,
-                    color: Colors.white,
-                  ))
+                Icons.message,
+                color: Colors.white,
+              ))
             ],
             backgroundColor: Colors.indigo,
           ),
@@ -105,8 +141,8 @@ class HomePageState extends State<HomePage> {
             ],
           )
 
-        //_buildContainer(),
-      ),
+          //_buildContainer(),
+          ),
     );
   }
 
@@ -126,7 +162,7 @@ class HomePageState extends State<HomePage> {
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
-        markers: createMarker(),
+        markers: Set<Marker>.of(markers.values),
       ),
     );
   }
@@ -149,6 +185,26 @@ class HomePageState extends State<HomePage> {
     });
   }
 
+/*  Set<Marker> listaMarkers() {
+    Set<Markers> lista;
+    Model model;
+
+    StreamBuilder(
+        stream: model.fetchProductsAsStream(),
+        // ignore: missing_return
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {if (snapshot.hasData) {
+          lista = snapshot.data.documents
+              .map((doc) => Markers.fromMap(doc.data, doc.documentID)).toSet();
+          return ListView.builder(
+            physics: BouncingScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            itemCount: lista.length,
+            itemBuilder: (buildContext, index) =>
+                Markers(),
+          );
+        }});
+  }*/
+
   Set<Marker> createMarker() {
     return <Marker>[
       Marker(
@@ -166,8 +222,7 @@ class HomePageState extends State<HomePage> {
             title: 'PlatformMarker',
             snippet: "Hi I'm a Platform Marker",
           ),
-          onTap: () {
-          }),
+          onTap: () {}),
       Marker(
           markerId: MarkerId('marker_1'),
           position: LatLng(43.373379, -8.433498),
@@ -177,8 +232,7 @@ class HomePageState extends State<HomePage> {
             title: 'PlatformMarker',
             snippet: "Hi I'm a Platform Marker",
           ),
-          onTap: () {
-          }),
+          onTap: () {}),
       Marker(
           markerId: MarkerId('marker_1'),
           position: LatLng(43.370882, -8.422394),
@@ -188,8 +242,7 @@ class HomePageState extends State<HomePage> {
             title: 'PlatformMarker',
             snippet: "Hi I'm a Platform Marker",
           ),
-          onTap: () {
-          }),
+          onTap: () {}),
       Marker(
           markerId: MarkerId('marker_1'),
           position: LatLng(43.376847, -8.422327),
@@ -199,8 +252,7 @@ class HomePageState extends State<HomePage> {
             title: 'PlatformMarker',
             snippet: "Hi I'm a Platform Marker",
           ),
-          onTap: () {
-          }),
+          onTap: () {}),
     ].toSet();
   }
 
