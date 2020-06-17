@@ -128,19 +128,23 @@ class _RegisterFormState extends State<RegisterForm> {
                       children: <Widget>[
                         Container(
                           child: RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                  text: 'nombre',
-                                  style: GoogleFonts.patuaOne(
-                                    fontSize: 80,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white,
-                                  ))),
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              text: 'WirtZ',
+                              style: GoogleFonts.patuaOne(
+                                fontSize: 35,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
                         TextForm(
                           controller: _emailController,
                           text: 'Email',
-                          icon: Icons.email,oscureText: false,type: TextInputType.emailAddress,
+                          icon: Icons.email,
+                          oscureText: false,
+                          type: TextInputType.emailAddress,
                         ),
                         SizedBox(
                           height: 15,
@@ -148,7 +152,8 @@ class _RegisterFormState extends State<RegisterForm> {
                         TextForm(
                           controller: _passwordController,
                           text: 'Contraseña',
-                          icon: Icons.lock,oscureText: true,
+                          icon: Icons.lock,
+                          oscureText: true,
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(vertical: 16.0),

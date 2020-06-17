@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:wirtz/bloc/authentication/bloc.dart';
 import 'package:wirtz/widgets/drawer.dart';
 
 class HomePage extends StatefulWidget {
@@ -89,30 +91,24 @@ class HomePageState extends State<HomePage> {
             title: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                  text: 'N',
-                  style: GoogleFonts.righteous(
+                  text: 'WirtZ',
+                  style: GoogleFonts.patuaOne(
                     fontSize: 35,
                     fontWeight: FontWeight.w900,
                     color: Colors.white,
                   ),
-                  children: [
-                    TextSpan(
-                      text: 'ombr',
-                      style: TextStyle(
-                          color: Colors.white, fontSize: 35, wordSpacing: 1),
-                    ),
-                    TextSpan(
-                      text: 'e',
-                      style: TextStyle(color: Colors.white, fontSize: 35),
-                    ),
-                  ]),
+                 ),
             ),
             actions: <Widget>[
               IconButton(
+                  onPressed: () {
+                    BlocProvider.of<AuthenticationBloc>(context)
+                        .add(LoggedOut());
+                  },
                   icon: Icon(
-                Icons.message,
-                color: Colors.white,
-              ))
+                    Icons.exit_to_app,
+                    color: Colors.white,
+                  ))
             ],
             backgroundColor: Colors.indigo,
           ),
@@ -130,8 +126,9 @@ class HomePageState extends State<HomePage> {
                     topLeft: Radius.circular(50.0),
                     topRight: Radius.circular(50.0)),
                 onPanelSlide: (double pos) => setState(() {
-                  this._fabHeight = pos * (_panelHeightOpen - _panelHeightClosed) +
-                      _initFabHeight;
+                  this._fabHeight =
+                      pos * (_panelHeightOpen - _panelHeightClosed) +
+                          _initFabHeight;
                 }),
               ),
             ],
@@ -143,24 +140,32 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget _buildGoogleMap(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: GoogleMap(
-        zoomControlsEnabled: false, myLocationEnabled: true,
-        // myLocationEnabled: true,
-        initialCameraPosition: CameraPosition(
-          target: LatLng(position.latitude, position.longitude),
-          zoom: 17,
-          tilt: 30.0,
-          bearing: 270.0,
-        ),
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-        markers: Set<Marker>.of(markers.values),
-      ),
-    );
+    return position == null
+        ? Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Center(
+              child: Container(child: CircularProgressIndicator(),
+              ),
+            ))
+        : Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: GoogleMap(
+              zoomControlsEnabled: false, myLocationEnabled: true,
+              // myLocationEnabled: true,
+              initialCameraPosition: CameraPosition(
+                target: LatLng(position.latitude, position.longitude),
+                zoom: 17,
+                tilt: 30.0,
+                bearing: 270.0,
+              ),
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
+              markers: Set<Marker>.of(markers.values),
+            ),
+          );
   }
 
   Future<void> _gotoLocation(double lat, double long) async {
@@ -175,10 +180,11 @@ class HomePageState extends State<HomePage> {
 
   void _getLocation() async {
     Position res = await Geolocator().getCurrentPosition();
-
-    setState(() {
-      position = res;
-    });
+    res == null
+        ? CircularProgressIndicator()
+        : setState(() {
+            position = res;
+          });
   }
 
 /*  Set<Marker> listaMarkers() {

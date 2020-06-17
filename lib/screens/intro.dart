@@ -70,26 +70,13 @@ class _IntroState extends State<Intro> {
                     RichText(
                       textAlign: TextAlign.center,
                       text: TextSpan(
-                          text: 'N',
+                          text: 'WirtZ',
                           style: GoogleFonts.righteous(
                             fontSize: 35,
                             fontWeight: FontWeight.w900,
                             color: Colors.white,
                           ),
-                          children: [
-                            TextSpan(
-                              text: 'ombr',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 35,
-                                  wordSpacing: 1),
-                            ),
-                            TextSpan(
-                              text: 'e',
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 35),
-                            ),
-                          ]),
+                         ),
                     ),
                   ],
                 ),

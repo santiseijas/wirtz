@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:wirtz/bloc/authentication/authentication_bloc.dart';
+import 'package:wirtz/bloc/authentication/authentication_bloc.dart';
+import 'package:wirtz/bloc/authentication/bloc.dart';
 import 'package:wirtz/models/user_repository.dart';
 
 class MyDrawer extends StatefulWidget {
-
   @override
   _MyDrawerState createState() => _MyDrawerState();
 }
@@ -43,7 +46,7 @@ class _MyDrawerState extends State<MyDrawer> {
             color: Colors.indigo,
           ),
           _createDrawerItemLogout(
-              icon: Icons.bug_report, text: 'Cerrar sesion'),
+              text: 'Cerrar sesion'),
         ],
       ),
     ));
@@ -100,14 +103,16 @@ class _MyDrawerState extends State<MyDrawer> {
     );
   }
 
-  Widget _createDrawerItemLogout(
-      {IconData icon, String text, BuildContext context}) {
+  Widget _createDrawerItemLogout({String text, BuildContext context}) {
     return ListTile(
       title: Row(
         children: <Widget>[
-          Icon(
-            icon,
+          IconButton(
+            onPressed: () {
+              BlocProvider.of<AuthenticationBloc>(context).add(LoggedOut());
+            },
             color: Colors.red,
+            icon: Icon(Icons.exit_to_app),
           ),
           Padding(
             padding: EdgeInsets.only(left: 8.0),
@@ -119,7 +124,6 @@ class _MyDrawerState extends State<MyDrawer> {
           )
         ],
       ),
-
     );
   }
 }

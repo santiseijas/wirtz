@@ -165,12 +165,13 @@ class _LoginFormState extends State<LoginForm> {
       child: RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
-              text: 'nombre',
-              style: GoogleFonts.patuaOne(
-                fontSize: 80,
-                fontWeight: FontWeight.w900,
-                color: Colors.white,
-              ))),
+            text: 'WirtZ',
+            style: GoogleFonts.patuaOne(
+              fontSize: 35,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+            ),
+          ),),
     );
   }
 
