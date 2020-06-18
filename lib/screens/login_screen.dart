@@ -100,9 +100,7 @@ class _LoginFormState extends State<LoginForm> {
           BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => HomePage(
-                    )),
+            MaterialPageRoute(builder: (context) => HomePage()),
           );
         }
       },
@@ -140,7 +138,33 @@ class _LoginFormState extends State<LoginForm> {
     return Form(
       child: ListView(
         children: <Widget>[
-          showTitle(),
+          Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image.asset(
+                  'assets/images/moto2.png',
+                  width: 300,
+                  fit: BoxFit.cover,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 10.0),
+                ),
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    text: 'WirtZ',
+                    style: GoogleFonts.righteous(
+                      fontSize: 35,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+         /* showTitle(),*/
           emailInput(state),
           passInput(state),
           Container(
@@ -163,15 +187,16 @@ class _LoginFormState extends State<LoginForm> {
   Widget showTitle() {
     return Container(
       child: RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-            text: 'WirtZ',
-            style: GoogleFonts.patuaOne(
-              fontSize: 35,
-              fontWeight: FontWeight.w900,
-              color: Colors.white,
-            ),
-          ),),
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          text: 'WirtZ',
+          style: GoogleFonts.patuaOne(
+            fontSize: 35,
+            fontWeight: FontWeight.w900,
+            color: Colors.white,
+          ),
+        ),
+      ),
     );
   }
 

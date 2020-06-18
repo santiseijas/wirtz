@@ -5,6 +5,7 @@ import 'package:wirtz/bloc/authentication/authentication_bloc.dart';
 import 'package:wirtz/bloc/authentication/authentication_bloc.dart';
 import 'package:wirtz/bloc/authentication/bloc.dart';
 import 'package:wirtz/models/user_repository.dart';
+import 'package:wirtz/screens/packs_screen.dart';
 
 class MyDrawer extends StatefulWidget {
   @override
@@ -24,24 +25,24 @@ class _MyDrawerState extends State<MyDrawer> {
         children: <Widget>[
           _createHeader(),
           _createDrawerItem(
-            icon: Icons.contacts,
+            icon: Icons.settings,
             text: 'Ajustes',
           ),
-          _createDrawerItem(
-            icon: Icons.event,
-            text: 'Recargar saldo',
-          ),
+
           _createDrawerItem(
             icon: Icons.note,
-            text: 'Packs',
+            text: 'Packs',onTap: (){Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PacksView()),
+          );}
           ),
           _createDrawerItem(
-              icon: Icons.collections_bookmark, text: 'Mis viajes'),
+              icon: Icons.map, text: 'Mis viajes'),
           Divider(
             color: Colors.indigo,
           ),
-          _createDrawerItem(icon: Icons.account_box, text: 'guia'),
-          _createDrawerItem(icon: Icons.stars, text: 'ayuda'),
+          _createDrawerItem(icon: Icons.book, text: 'guia'),
+          _createDrawerItem(icon: Icons.help, text: 'ayuda'),
           Divider(
             color: Colors.indigo,
           ),

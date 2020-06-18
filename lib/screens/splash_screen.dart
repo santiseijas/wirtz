@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wirtz/models/user_repository.dart';
 import 'package:wirtz/screens/register_screen.dart';
+import 'package:wirtz/util/util.dart';
 
 import 'login_screen.dart';
 
@@ -86,7 +87,7 @@ class _SplashScreenState extends State<SplashScreen> {
             InkWell(
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => RegisterScreen(userRepository: _userRepository,)));
+                    MaterialPageRoute(builder: (context) => Util()));
               },
               child: Container(
                 height: 60,

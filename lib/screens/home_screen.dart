@@ -20,7 +20,8 @@ class HomePage extends StatefulWidget {
   HomePageState createState() => HomePageState();
 }
 
-class HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   Completer<GoogleMapController> _controller = Completer();
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   Position position;
@@ -30,12 +31,16 @@ class HomePageState extends State<HomePage> {
   double _panelHeightOpen;
   double _panelHeightClosed = 60.0;
   double _fabHeight;
+  Tween<Offset> _tween = Tween(begin: Offset(0, 1), end: Offset(0, 0));
+  AnimationController animationController;
+  Duration _duration = Duration(milliseconds: 500);
 
   @override
   void initState() {
     _getLocation();
     populateClients();
-    print(markers.values.toString());
+    animationController = AnimationController(vsync: this, duration: _duration);
+
     BitmapDescriptor.fromAssetImage(
             ImageConfiguration(), 'assets/images/destination_map_marker.png')
         .then((onValue) {
@@ -64,6 +69,9 @@ class HomePageState extends State<HomePage> {
     var markeridVal = requestId;
     final MarkerId markerId = MarkerId(markeridVal);
     final Marker marker = Marker(
+      onTap: () async {
+        if (animationController.isDismissed) animationController.forward();
+      },
       consumeTapEvents: true,
       icon: myIcon,
       infoWindow: InfoWindow(
@@ -75,7 +83,6 @@ class HomePageState extends State<HomePage> {
     );
     setState(() {
       markers[markerId] = marker;
-      print(markerId);
     });
   }
 
@@ -91,13 +98,13 @@ class HomePageState extends State<HomePage> {
             title: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                  text: 'WirtZ',
-                  style: GoogleFonts.patuaOne(
-                    fontSize: 35,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white,
-                  ),
-                 ),
+                text: 'WirtZ',
+                style: GoogleFonts.patuaOne(
+                  fontSize: 35,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                ),
+              ),
             ),
             actions: <Widget>[
               IconButton(
@@ -115,26 +122,31 @@ class HomePageState extends State<HomePage> {
           body: Stack(
             children: <Widget>[
               _buildGoogleMap(context),
-              SlidingUpPanel(
-                color: Colors.white,
-                maxHeight: _panelHeightOpen,
-                minHeight: _panelHeightClosed,
-                parallaxEnabled: false,
-                parallaxOffset: .5,
-                panelBuilder: (sc) => _panel(sc),
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(50.0),
-                    topRight: Radius.circular(50.0)),
-                onPanelSlide: (double pos) => setState(() {
-                  this._fabHeight =
-                      pos * (_panelHeightOpen - _panelHeightClosed) +
-                          _initFabHeight;
-                }),
+              SizedBox.expand(
+                child: SlideTransition(
+                  position: _tween.animate(animationController),
+                  child: DraggableScrollableSheet(
+                    minChildSize: .1,
+                    maxChildSize: .6,
+                    builder: (BuildContext context,
+                        ScrollController scrollController) {
+                      return Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: new BorderRadius.only(
+                              topLeft: const Radius.circular(100.0),
+                              topRight: const Radius.circular(100.0),
+                            )),
+                        child: _panel(scrollController),
+                      );
+                    },
+                  ),
+                ),
               ),
+
             ],
           )
 
-          //_buildContainer(),
           ),
     );
   }
@@ -145,7 +157,8 @@ class HomePageState extends State<HomePage> {
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: Center(
-              child: Container(child: CircularProgressIndicator(),
+              child: Container(
+                child: CircularProgressIndicator(),
               ),
             ))
         : Container(
@@ -168,15 +181,7 @@ class HomePageState extends State<HomePage> {
           );
   }
 
-  Future<void> _gotoLocation(double lat, double long) async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      target: LatLng(lat, long),
-      zoom: 17,
-      tilt: 30.0,
-      bearing: 270.0,
-    )));
-  }
+
 
   void _getLocation() async {
     Position res = await Geolocator().getCurrentPosition();
@@ -187,76 +192,7 @@ class HomePageState extends State<HomePage> {
           });
   }
 
-/*  Set<Marker> listaMarkers() {
-    Set<Markers> lista;
-    Model model;
 
-    StreamBuilder(
-        stream: model.fetchProductsAsStream(),
-        // ignore: missing_return
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {if (snapshot.hasData) {
-          lista = snapshot.data.documents
-              .map((doc) => Markers.fromMap(doc.data, doc.documentID)).toSet();
-          return ListView.builder(
-            physics: BouncingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            itemCount: lista.length,
-            itemBuilder: (buildContext, index) =>
-                Markers(),
-          );
-        }});
-  }*/
-
-  Set<Marker> createMarker() {
-    return <Marker>[
-      Marker(
-        icon: myIcon2,
-        markerId: MarkerId("curr_loc"),
-        position: LatLng(position.latitude, position.longitude),
-        infoWindow: InfoWindow(title: 'Your Location'),
-      ),
-      Marker(
-          markerId: MarkerId('marker_1'),
-          position: LatLng(43.375734, -8.433334),
-          consumeTapEvents: true,
-          icon: myIcon,
-          infoWindow: InfoWindow(
-            title: 'PlatformMarker',
-            snippet: "Hi I'm a Platform Marker",
-          ),
-          onTap: () {}),
-      Marker(
-          markerId: MarkerId('marker_1'),
-          position: LatLng(43.373379, -8.433498),
-          consumeTapEvents: true,
-          icon: myIcon,
-          infoWindow: InfoWindow(
-            title: 'PlatformMarker',
-            snippet: "Hi I'm a Platform Marker",
-          ),
-          onTap: () {}),
-      Marker(
-          markerId: MarkerId('marker_1'),
-          position: LatLng(43.370882, -8.422394),
-          consumeTapEvents: true,
-          icon: myIcon,
-          infoWindow: InfoWindow(
-            title: 'PlatformMarker',
-            snippet: "Hi I'm a Platform Marker",
-          ),
-          onTap: () {}),
-      Marker(
-          markerId: MarkerId('marker_1'),
-          position: LatLng(43.376847, -8.422327),
-          consumeTapEvents: true,
-          icon: myIcon,
-          infoWindow: InfoWindow(
-            title: 'PlatformMarker',
-            snippet: "Hi I'm a Platform Marker",
-          ),
-          onTap: () {}),
-    ].toSet();
-  }
 
   Widget _panel(ScrollController sc) {
     return MediaQuery.removePadding(
@@ -268,12 +204,15 @@ class HomePageState extends State<HomePage> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Container(
-                  width: 50,
-                  height: 5,
-                  decoration: BoxDecoration(
-                      color: Colors.indigo,
-                      borderRadius: BorderRadius.all(Radius.circular(12.0))),
+                GestureDetector(
+                  onTap: () {
+                    if (animationController.isCompleted)
+                      animationController.reverse();
+                  },
+                  child: AnimatedIcon(
+                      size: 40,
+                      icon: AnimatedIcons.menu_close,
+                      progress: animationController),
                 ),
                 SizedBox(
                   height: 20,
