@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FireBaseAPI {
+class MarkersRepository {
   static Stream<QuerySnapshot> markersStream =
   Firestore.instance.collection('markers').snapshots();
 
@@ -24,24 +24,16 @@ class FireBaseAPI {
     });
   }
 
-  static updateMarkers(String id, String newTitulo, String newDes) {
+  static updateMarkers(String id, String userId,bool reservado) {
     Firestore.instance.runTransaction((Transaction transaction) async {
       await reference.document(id).updateData({
-        "titulo": newTitulo,
-        "descripcion": newDes,
+        "userId": userId,
+        "reservado":reservado,
       }).catchError((error) {
         print(error);
       });
     });
   }
-  static updateCheck(String id, bool newCheck) {
-    Firestore.instance.runTransaction((Transaction transaction) async {
-      await reference.document(id).updateData({
-        "check": newCheck,
-      }).catchError((error) {
-        print(error);
-      });
-    });
-  }
+
 
 }

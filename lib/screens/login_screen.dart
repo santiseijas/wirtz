@@ -8,6 +8,7 @@ import 'package:wirtz/models/user_repository.dart';
 import 'package:wirtz/screens/home_screen.dart';
 
 import 'package:wirtz/widgets/login_button.dart';
+import 'package:wirtz/widgets/logo.dart';
 
 import 'home_screen.dart';
 
@@ -89,7 +90,7 @@ class _LoginFormState extends State<LoginForm> {
                 content: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Logging In...'),
+                    Text('Comprobando datos'),
                     CircularProgressIndicator(),
                   ],
                 ),
@@ -141,30 +142,10 @@ class _LoginFormState extends State<LoginForm> {
           Container(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Image.asset(
-                  'assets/images/moto2.png',
-                  width: 300,
-                  fit: BoxFit.cover,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 10.0),
-                ),
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    text: 'WirtZ',
-                    style: GoogleFonts.righteous(
-                      fontSize: 35,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
+              children: <Widget>[Logo()],
             ),
           ),
-         /* showTitle(),*/
+          /* showTitle(),*/
           emailInput(state),
           passInput(state),
           Container(
@@ -207,20 +188,22 @@ class _LoginFormState extends State<LoginForm> {
         child: TextFormField(
           controller: _emailController,
           decoration: new InputDecoration(
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.transparent),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
             prefixIcon: Icon(
               Icons.email,
               color: Colors.white,
             ),
             labelText: "Email",
             labelStyle: GoogleFonts.crimsonText(
-                fontSize: 25,
+                fontSize: 30,
                 fontWeight: FontWeight.w700,
                 fontStyle: FontStyle.italic,
                 color: Colors.white),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.white, width: 3.0),
-              borderRadius: BorderRadius.circular(25.0),
-            ),
           ),
           keyboardType: TextInputType.emailAddress,
           autovalidate: true,
@@ -239,21 +222,23 @@ class _LoginFormState extends State<LoginForm> {
         child: Container(
           child: TextFormField(
             controller: _passwordController,
-            decoration: new InputDecoration(
+            decoration: new InputDecoration(enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.transparent),
+            ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+              ),
+              focusColor: Colors.red,
               prefixIcon: Icon(
                 Icons.lock,
                 color: Colors.white,
               ),
               labelText: "Contraseña",
               labelStyle: GoogleFonts.crimsonText(
-                  fontSize: 25,
+                  fontSize: 30,
                   fontWeight: FontWeight.w700,
                   fontStyle: FontStyle.italic,
                   color: Colors.white),
-              focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.white, width: 3.0),
-                borderRadius: BorderRadius.circular(25.0),
-              ),
             ),
             obscureText: true,
             autovalidate: true,

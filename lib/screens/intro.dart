@@ -24,7 +24,7 @@ class _IntroState extends State<Intro> {
     // TODO: implement initState
     super.initState();
     Timer(
-        Duration(seconds: 3),
+        Duration(seconds: 1),
             () => Navigator.push(
             context, MaterialPageRoute(builder: (context) => SplashScreen(userRepository: _userRepository,))));
   }
@@ -60,7 +60,7 @@ class _IntroState extends State<Intro> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Image.asset(
-                      'assets/images/moto2.png',
+                      'assets/images/motoAzul2.png',
                       width: 300,
                       fit: BoxFit.cover,
                     ),

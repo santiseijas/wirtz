@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:wirtz/models/user_repository.dart';
 import 'package:wirtz/screens/register_screen.dart';
 import 'package:wirtz/util/util.dart';
+import 'package:wirtz/widgets/logo.dart';
 
 import 'login_screen.dart';
 
@@ -51,18 +52,19 @@ class _SplashScreenState extends State<SplashScreen> {
             SizedBox(
               height: 150,
             ),
-            Image.asset(
-              'assets/images/moto4.png',
-              width: 300,
-              fit: BoxFit.cover,
-            ),
-            SizedBox(
-              height: 150,
+          Logo()
+            ,SizedBox(
+              height: MediaQuery.of(context).size.height * 0.3
+              ,
             ),
             InkWell(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LoginScreen(userRepository: _userRepository,)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => LoginScreen(
+                              userRepository: _userRepository,
+                            )));
               },
               child: Container(
                 width: 200,
@@ -86,8 +88,8 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             InkWell(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Util()));
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => RegisterScreen(userRepository: _userRepository,)));
               },
               child: Container(
                 height: 60,
