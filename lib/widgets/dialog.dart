@@ -118,7 +118,6 @@ class _MyDialogState extends State<MyDialog> {
                     for (var map in availableMaps)
                       ListTile(
                         onTap: () => map.showMarker(
-                          coords: coords,
                         ),
                         title: Text(map.mapName),
                         leading: Image(

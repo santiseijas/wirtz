@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wirtz/models/user_repository.dart';
 import 'package:wirtz/screens/register_screen.dart';
-import 'package:wirtz/util/util.dart';
 import 'package:wirtz/widgets/logo.dart';
 
 import 'login_screen.dart';

@@ -8,10 +8,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:wirtz/bloc/authentication/authentication_bloc.dart';
-import 'package:wirtz/bloc/authentication/authentication_bloc.dart';
 import 'package:wirtz/bloc/authentication/bloc.dart';
 import 'package:wirtz/models/markers_repository.dart';
-import 'package:wirtz/widgets/dialog.dart';
 import 'package:wirtz/widgets/drawer.dart';
 import 'package:wirtz/widgets/reservar_button.dart';
 

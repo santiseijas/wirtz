@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:wirtz/main.dart';
 import 'package:wirtz/screens/payment_screen.dart';
-import 'package:wirtz/util/theme.dart';
-import 'package:wirtz/widgets/login_button.dart';
 
 class PacksView extends StatelessWidget {
   const PacksView({Key key}) : super(key: key);
