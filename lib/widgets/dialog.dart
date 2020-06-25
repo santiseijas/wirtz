@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:map_launcher/map_launcher.dart';
-import 'package:wirtz/screens/home_screen.dart';
 
 class MyDialog extends StatefulWidget {
+  const MyDialog({Key key, this.coords}) : super(key: key);
+
   @override
   _MyDialogState createState() => _MyDialogState();
+  final LatLng coords;
 }
 
 class _MyDialogState extends State<MyDialog> {
@@ -21,21 +24,22 @@ class _MyDialogState extends State<MyDialog> {
       backgroundColor: Colors.indigo,
       child: Stack(
         children: <Widget>[
-          Container(height: 230,
+          Container(
+            height: 210,
             padding: EdgeInsets.only(
               top: avatarRadius + padding,
               bottom: padding,
               left: padding,
               right: padding,
             ),
-            margin: EdgeInsets.only(top: avatarRadius),
+            margin: EdgeInsets.only(top: avatarRadius,bottom: 0),
             decoration: new BoxDecoration(
               color: Colors.white,
               shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(padding),
+              borderRadius: BorderRadius.vertical(top:Radius.circular(30) ,bottom: Radius.circular(15)),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black26,
+                  color: Colors.black54,
                   blurRadius: 10.0,
                   offset: const Offset(0.0, 10.0),
                 ),
@@ -44,29 +48,32 @@ class _MyDialogState extends State<MyDialog> {
             child: Column(
               children: <Widget>[
                 Text(
-                  'Has reservado la moto, pulsa el boton para iniciar nevagación'.toUpperCase(),textAlign: TextAlign.center,
+                    'Has reservado la moto, pulsa el boton para iniciar nevagación'
+                        .toUpperCase(),
+                    textAlign: TextAlign.center,
                     style: GoogleFonts.patuaOne(
                         fontSize: 17,
                         fontWeight: FontWeight.w400,
                         fontStyle: FontStyle.italic,
-                        color: Colors.black)
-                ),
-                SizedBox(height: 70.0),
+                        color: Colors.black)),
+                SizedBox(height: 50.0),
 
 
                 Align(
-                    alignment: Alignment.bottomCenter, child: showNavigationButton()),
+                    alignment: Alignment.bottomCenter,
+                    child: showNavigationButton()),
               ],
             ),
           ),
           Positioned(
-            left: padding,
-            right: padding,
-            child: CircleAvatar(child: Image.asset(
-              "assets/images/moto.png",
-              height: 200,
-              width: 150,
-            ),
+            left: 30,
+            right: 30,
+            child: CircleAvatar(
+              child: Image.asset(
+                "assets/images/moto.png",
+                height: 200,
+                width: 150,
+              ),
               backgroundColor: Colors.indigo,
               radius: avatarRadius,
             ),
@@ -100,9 +107,9 @@ class _MyDialogState extends State<MyDialog> {
     );
   }
 
-  static openMapsSheet(context) async {
+  openMapsSheet(context) async {
     try {
-      final coords = Coords(43.375734, -8.433334);
+      final coor = Coords(widget.coords.latitude, widget.coords.longitude);
       final availableMaps = await MapLauncher.installedMaps;
 
       print(availableMaps);
@@ -117,8 +124,7 @@ class _MyDialogState extends State<MyDialog> {
                   children: <Widget>[
                     for (var map in availableMaps)
                       ListTile(
-                        onTap: () => map.showMarker(
-                        ),
+                        onTap: () => map.showMarker(coords: coor),
                         title: Text(map.mapName),
                         leading: Image(
                           image: map.icon,

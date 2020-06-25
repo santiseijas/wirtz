@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,6 +44,7 @@ class _RegisterFormState extends State<RegisterForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _userNameController = TextEditingController();
 
   RegisterBloc _registerBloc;
 
@@ -140,6 +142,12 @@ class _RegisterFormState extends State<RegisterForm> {
                           ),
                         ),
                         TextForm(
+                          controller: _userNameController,
+                          text: 'Nombre',
+                          icon: Icons.email,
+                          oscureText: false,
+                        ),
+                        TextForm(
                           controller: _emailController,
                           text: 'Email',
                           icon: Icons.email,
@@ -205,8 +213,11 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   void _onFormSubmitted() {
+
+/*    UserUpdateInfo userUpdateInfo = new UserUpdateInfo();
+    userUpdateInfo.displayName = _userNameController.text;*/
     _registerBloc.add(
-      Submitted(
+      Submitted(nombre:_userNameController.text ,
         email: _emailController.text,
         password: _passwordController.text,
       ),

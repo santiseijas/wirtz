@@ -8,13 +8,13 @@ class Logo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(backgroundColor: Colors.indigo,
-      radius: 99,
+    return CircleAvatar(backgroundColor: Colors.transparent,
+      radius: 100,
       child: Column(
         children: <Widget>[
           Image.asset(
-            'assets/images/motoAzul2.png',
-            width: 150,
+            'assets/images/logo0.png',
+            width: 300,
             fit: BoxFit.cover,
           ),
           RichText(

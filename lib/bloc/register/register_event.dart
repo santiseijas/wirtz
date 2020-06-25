@@ -35,14 +35,18 @@ class PasswordChanged extends RegisterEvent {
 class Submitted extends RegisterEvent {
   final String email;
   final String password;
+  final String nombre;
+
 
   const Submitted({
     @required this.email,
     @required this.password,
+    @required this.nombre
   });
 
   @override
   List<Object> get props => [email, password];
+
 
   @override
   String toString() {

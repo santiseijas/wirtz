@@ -3,20 +3,20 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:wirtz/bloc/authentication/authentication_bloc.dart';
-import 'package:wirtz/bloc/authentication/bloc.dart';
 import 'package:wirtz/models/markers_repository.dart';
+import 'package:wirtz/models/user_repository.dart';
+import 'package:wirtz/widgets/dialog.dart';
 import 'package:wirtz/widgets/drawer.dart';
 import 'package:wirtz/widgets/reservar_button.dart';
 
 class HomePage extends StatefulWidget {
   final String name;
+  final UserRepository userRepository;
 
-  const HomePage({Key key, this.name}) : super(key: key);
+  const HomePage({Key key, this.name, this.userRepository}) : super(key: key);
 
   @override
   HomePageState createState() => HomePageState();
@@ -34,7 +34,8 @@ class HomePageState extends State<HomePage>
   Duration _duration = Duration(milliseconds: 500);
   String documentId;
   String calle;
-
+  LatLng coords;
+  var longitud;
 
   @override
   void initState() {
@@ -73,6 +74,8 @@ class HomePageState extends State<HomePage>
         setState(() {
           documentId = markeridVal.toString();
           calle = request['calle'];
+          coords =
+              LatLng(request['coord'].latitude, request['coord'].longitude);
           if (animationController.isDismissed) animationController.forward();
         });
       },
@@ -94,13 +97,15 @@ class HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
-          drawer: MyDrawer(),
+          drawer: MyDrawer(
+            userRepository: widget.userRepository,
+          ),
           appBar: AppBar(
             centerTitle: true,
             title: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                text: 'WirtZ',
+                text: 'Wirtz',
                 style: GoogleFonts.patuaOne(
                   fontSize: 35,
                   fontWeight: FontWeight.w900,
@@ -108,18 +113,6 @@ class HomePageState extends State<HomePage>
                 ),
               ),
             ),
-            actions: <Widget>[
-              IconButton(
-                  onPressed: () {
-
-                    BlocProvider.of<AuthenticationBloc>(context)
-                        .add(LoggedOut());
-                  },
-                  icon: Icon(
-                    Icons.exit_to_app,
-                    color: Colors.white,
-                  ))
-            ],
             backgroundColor: Colors.indigo,
           ),
           body: Stack(
@@ -207,7 +200,7 @@ class HomePageState extends State<HomePage>
                       animationController.reverse();
                   },
                   child: Icon(
-                    Icons.close,
+                    Icons.arrow_drop_down,
                     size: 30,
                   ),
                 ),
@@ -250,7 +243,7 @@ class HomePageState extends State<HomePage>
                                   ),
                                 ],
                               ),
-                              Text('35 KM',
+                              Text('35 km'.toUpperCase(),
                                   style: GoogleFonts.patuaOne(
                                     fontSize: 20,
                                     fontStyle: FontStyle.italic,
@@ -269,10 +262,22 @@ class HomePageState extends State<HomePage>
                       children: <Widget>[
                         SizedBox(
                           width: 10,
-                        ),Align(
-                            alignment: Alignment.center,
-                            child: ReservarButton()
                         ),
+                        Align(
+                            alignment: Alignment.center,
+                            child: ReservarButton(
+                              callback: () {
+                                inputData();
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return MyDialog(
+                                        coords: coords,
+                                      );
+                                    });
+                              },
+                              coords: coords,
+                            )),
                       ],
                     ),
                   ),
@@ -283,20 +288,21 @@ class HomePageState extends State<HomePage>
         ));
   }
 
-
-
-
-
-
   Future<String> inputData() async {
     final FirebaseUser user = await FirebaseAuth.instance.currentUser();
     final String uid = user.uid.toString();
-    print(user.uid.toString());
-    print(user.email.toString());
+    final String email = user.email;
+    print(email);
+/*
+    final String name = user.displayName;
+*/
+/*    print(user.uid.toString());
+    print(user.email.toString());*/
     MarkersRepository.updateMarkers(documentId, uid, true);
+/*
+    UserRepository.updateUser(id, uid);
+*/
     setState(() {});
     return uid;
   }
-
-
 }

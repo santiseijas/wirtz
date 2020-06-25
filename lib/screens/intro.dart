@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wirtz/models/user_repository.dart';
 import 'package:wirtz/screens/splash_screen.dart';
+import 'package:wirtz/widgets/logo.dart';
 
 
 class Intro extends StatefulWidget {
@@ -59,25 +60,7 @@ class _IntroState extends State<Intro> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Image.asset(
-                      'assets/images/motoAzul2.png',
-                      width: 300,
-                      fit: BoxFit.cover,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 10.0),
-                    ),
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                          text: 'WirtZ',
-                          style: GoogleFonts.righteous(
-                            fontSize: 35,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.white,
-                          ),
-                         ),
-                    ),
+                    Logo(),
                   ],
                 ),
               ),

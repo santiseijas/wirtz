@@ -258,6 +258,7 @@ class _LoginFormState extends State<LoginForm> {
         ),
         InkWell(
           onTap: () {
+
             isLoginButtonEnabled(state) ? _onFormSubmitted : null;
           },
           child: Container(

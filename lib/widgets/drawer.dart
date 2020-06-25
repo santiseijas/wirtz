@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,13 +8,15 @@ import 'package:wirtz/models/user_repository.dart';
 import 'package:wirtz/screens/packs_screen.dart';
 
 class MyDrawer extends StatefulWidget {
+  final UserRepository userRepository;
+
+  const MyDrawer({Key key, this.userRepository}) : super(key: key);
+
   @override
   _MyDrawerState createState() => _MyDrawerState();
 }
 
 class _MyDrawerState extends State<MyDrawer> {
-  UserRepository userRepository;
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -25,28 +28,32 @@ class _MyDrawerState extends State<MyDrawer> {
           _createHeader(),
           _createDrawerItem(
             icon: Icons.settings,
-            text: 'Ajustes',
-          ),
-
-          _createDrawerItem(
-            icon: Icons.note,
-            text: 'Packs',onTap: (){Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => PacksView()),
-          );}
+            text: 'Ajustes',onTap: (){getUserName();}
           ),
           _createDrawerItem(
-              icon: Icons.map, text: 'Mis viajes'),
+              icon: Icons.note,
+              text: 'Packs',
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => PacksView()));
+              }),
+          _createDrawerItem(icon: Icons.map, text: 'Mis viajes'),
           Divider(
             color: Colors.indigo,
           ),
-          _createDrawerItem(icon: Icons.book, text: 'guia'),
+          _createDrawerItem(
+              icon: Icons.book,
+              text: 'guia',
+              onTap: () {
+//                widget.userRepository.getUserId();
+              }),
           _createDrawerItem(icon: Icons.help, text: 'ayuda'),
           Divider(
             color: Colors.indigo,
           ),
-          _createDrawerItemLogout(
-              text: 'Cerrar sesion'),
+          _createDrawerItemLogout(onTap: () {
+            BlocProvider.of<AuthenticationBloc>(context).add(LoggedOut());
+          }),
         ],
       ),
     ));
@@ -64,7 +71,7 @@ class _MyDrawerState extends State<MyDrawer> {
               fit: BoxFit.fill,
               height: 80,
             ),
-            Text('Santiago Seijas Marante'.toUpperCase(),
+            Text('',
                 style: GoogleFonts.patuaOne(
                     fontSize: 20,
                     fontStyle: FontStyle.italic,
@@ -103,27 +110,33 @@ class _MyDrawerState extends State<MyDrawer> {
     );
   }
 
-  Widget _createDrawerItemLogout({String text, BuildContext context}) {
+  Widget _createDrawerItemLogout({GestureTapCallback onTap}) {
     return ListTile(
       title: Row(
         children: <Widget>[
-          IconButton(
-            onPressed: () {
-              BlocProvider.of<AuthenticationBloc>(context).add(LoggedOut());
-            },
+          Icon(
+            Icons.exit_to_app,
             color: Colors.red,
-            icon: Icon(Icons.exit_to_app),
           ),
           Padding(
             padding: EdgeInsets.only(left: 8.0),
             child: Text(
-              text.toUpperCase(),
+              'Cerrar sesion'.toUpperCase(),
               style: GoogleFonts.patuaOne(
                   fontSize: 15, fontStyle: FontStyle.italic, color: Colors.red),
             ),
           )
         ],
       ),
+      onTap: onTap,
     );
   }
+}
+
+Future<String> getUserName() async {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  final FirebaseUser user = await _auth.currentUser() ;
+  final nombre = user.displayName;
+  return nombre;
 }
