@@ -44,12 +44,12 @@ class HomePageState extends State<HomePage>
     animationController = AnimationController(vsync: this, duration: _duration);
 
     BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(), 'assets/images/destination_map_marker.png')
+        ImageConfiguration(), 'assets/images/destination_map_marker.png')
         .then((onValue) {
       myIcon = onValue;
     });
     BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(), 'assets/images/destination_map_marker.png')
+        ImageConfiguration(), 'assets/images/destination_map_marker.png')
         .then((onValue) {
       myIcon2 = onValue;
     });
@@ -148,31 +148,31 @@ class HomePageState extends State<HomePage>
   Widget _buildGoogleMap(BuildContext context) {
     return position == null
         ? Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Center(
-              child: Container(
-                child: CircularProgressIndicator(),
-              ),
-            ))
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Center(
+          child: Container(
+            child: CircularProgressIndicator(),
+          ),
+        ))
         : Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: GoogleMap(
-              zoomControlsEnabled: false, myLocationEnabled: true,
-              // myLocationEnabled: true,
-              initialCameraPosition: CameraPosition(
-                target: LatLng(position.latitude, position.longitude),
-                zoom: 15,
-                tilt: 30.0,
-                bearing: 270.0,
-              ),
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
-              markers: Set<Marker>.of(markers.values),
-            ),
-          );
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      child: GoogleMap(
+        zoomControlsEnabled: false, myLocationEnabled: true,
+        // myLocationEnabled: true,
+        initialCameraPosition: CameraPosition(
+          target: LatLng(position.latitude, position.longitude),
+          zoom: 15,
+          tilt: 30.0,
+          bearing: 270.0,
+        ),
+        onMapCreated: (GoogleMapController controller) {
+          _controller.complete(controller);
+        },
+        markers: Set<Marker>.of(markers.values),
+      ),
+    );
   }
 
   void _getLocation() async {
@@ -180,8 +180,8 @@ class HomePageState extends State<HomePage>
     res == null
         ? CircularProgressIndicator()
         : setState(() {
-            position = res;
-          });
+      position = res;
+    });
   }
 
   Widget _panel(ScrollController sc, String documentId) {

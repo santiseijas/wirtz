@@ -5,7 +5,6 @@ import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:wirtz/bloc/login/login_state.dart';
 import 'package:wirtz/util/validators.dart';
-
 import '../../models/user_repository.dart';
 import 'bloc.dart';
 
