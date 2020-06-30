@@ -12,7 +12,7 @@ class StripeTransactionResponse {
 class StripeService {
   static String apiBase = 'https://api.stripe.com/v1';
   static String paymentApiUrl = '${StripeService.apiBase}/payment_intents';
-  static String secret = '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';
+  static String secret = 'sk_test_51GyLIoFiQbC4xCdh4oQVV2MzsH1BrjwPu7cvmKzjZ98VXWOvow6J9eeNad7mkBj9ybEFhdTwkAvBPpnv9q7pQBML00lzsGwGcQ';
   static Map<String, String> headers = {
     'Authorization': 'Bearer ${StripeService.secret}',
     'Content-Type': 'application/x-www-form-urlencoded'
@@ -20,7 +20,7 @@ class StripeService {
   static init() {
     StripePayment.setOptions(
         StripeOptions(
-            publishableKey: "pk_live_51GyLIoFiQbC4xCdhYnauM0qW2vomVaGNJvdcrh4BdbWhMmXaWdoZQRPoigasNQ3s8EzbB9Nif06PXjPyb4D13GRD00xL0K0OyO",
+            publishableKey: "pk_test_51GyLIoFiQbC4xCdhjVHffxnV42SMJlFidkyDAC6FDYLjTjeiY81ttb3MveR3OKKTQgGisY50soccLghFMYlTNUoS007sHHiP0o",
             merchantId: "Test",
             androidPayMode: 'test'
         )
@@ -44,7 +44,7 @@ class StripeService {
       );
       if (response.status == 'succeeded') {
         return new StripeTransactionResponse(
-            message: 'Transaction successful',
+            message: 'Se te ha cargado el saldo con $amount€',
             success: true
         );
       } else {
@@ -80,7 +80,7 @@ class StripeService {
       );
       if (response.status == 'succeeded') {
         return new StripeTransactionResponse(
-            message: 'Transaction successful',
+            message: 'Se te ha cargado el saldo con $amount€',
             success: true
         );
       } else {

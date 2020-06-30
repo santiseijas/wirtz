@@ -3,12 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 import 'package:wirtz/bloc/authentication/authentication_bloc.dart';
 import 'package:wirtz/bloc/authentication/bloc.dart';
 import 'package:wirtz/models/user_repository.dart';
 import 'package:wirtz/screens/payment_screen.dart';
-import 'package:wirtz/services/stripe.dart';
 
 class MyDrawer extends StatefulWidget {
   final UserRepository userRepository;
@@ -21,6 +19,7 @@ class MyDrawer extends StatefulWidget {
 
 class _MyDrawerState extends State<MyDrawer> {
   String nombre;
+  String saldo;
   @override
   void initState() {
     getCurrentUser();
@@ -31,41 +30,45 @@ class _MyDrawerState extends State<MyDrawer> {
   Widget build(BuildContext context) {
     return Drawer(
         child: Container(
-          color: Colors.white,
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              _createHeader(),
-              _createDrawerItem(
-                  icon: Icons.settings, text: 'Ajustes', onTap: () {}),
-              _createDrawerItem(
-                  icon: Icons.note,
-                  text: 'Recargar Saldo',
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => PaymentScreen()));
-                  }),
-              _createDrawerItem(icon: Icons.map, text: 'Mis viajes'),
-              Divider(
-                color: Colors.indigo,
-              ),
-              _createDrawerItem(
-                  icon: Icons.book,
-                  text: 'guia',
-                  onTap: () {
-                    //getCurrentUser();
-//                widget.userRepository.getUserId();
-                  }),
-              _createDrawerItem(icon: Icons.help, text: 'ayuda'),
-              Divider(
-                color: Colors.indigo,
-              ),
-              _createDrawerItemLogout(onTap: () {
-                BlocProvider.of<AuthenticationBloc>(context).add(LoggedOut());
+      color: Colors.white,
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          _createHeader(),
+          _createDrawerItem(
+              icon: Icons.settings, text: 'Ajustes', onTap: () {}),
+          _createDrawerItem(
+              icon: Icons.note,
+              text: 'Recargar Saldo',
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PaymentScreen(
+                              userRepository: widget.userRepository,
+                            )));
               }),
-            ],
+          _createDrawerItem(icon: Icons.map, text: 'Mis viajes'),
+          Divider(
+            color: Colors.indigo,
           ),
-        ));
+          _createDrawerItem(
+              icon: Icons.book,
+              text: 'guia',
+              onTap: () {
+                //getCurrentUser();
+//                widget.userRepository.getUserId();
+              }),
+          _createDrawerItem(icon: Icons.help, text: 'ayuda'),
+          Divider(
+            color: Colors.indigo,
+          ),
+          _createDrawerItemLogout(onTap: () {
+            BlocProvider.of<AuthenticationBloc>(context).add(LoggedOut());
+          }),
+        ],
+      ),
+    ));
   }
 
   Widget _createHeader() {
@@ -85,7 +88,7 @@ class _MyDrawerState extends State<MyDrawer> {
                     fontSize: 20,
                     fontStyle: FontStyle.italic,
                     color: Colors.white)),
-            Text('Saldo: 0.00€'.toUpperCase(),
+            Text('Saldo: $saldo€'.toUpperCase(),
                 style: GoogleFonts.patuaOne(
                     fontSize: 20,
                     fontStyle: FontStyle.italic,
@@ -151,26 +154,7 @@ class _MyDrawerState extends State<MyDrawer> {
         .get()
         .then((value) {
       nombre = value.data['nombre'];
-      print(nombre);
+      saldo = value.data['saldo'];
     });
   }
 }
-payViaNewCard(BuildContext context) async {
-  ProgressDialog dialog = new ProgressDialog(context);
-  dialog.style(
-      message: 'Please wait...'
-  );
-  await dialog.show();
-  var response = await StripeService.payWithNewCard(
-      amount: '10',
-      currency: 'USD'
-  );
-  await dialog.hide();
-  Scaffold.of(context).showSnackBar(
-      SnackBar(
-        content: Text(response.message),
-        duration: new Duration(milliseconds: response.success == true ? 1200 : 3000),
-      )
-  );
-}
-

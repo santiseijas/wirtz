@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:wirtz/models/user.dart';
 
 class UserRepository {
   final FirebaseAuth _firebaseAuth;
@@ -40,11 +38,11 @@ class UserRepository {
       {String email, String password, String nombre, String uid}) async {
     //setFireBaseIdDocument();
 
-     await _firebaseAuth.createUserWithEmailAndPassword(
+    await _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
-     setFireBaseIdDocument(nombre);
+    setFireBaseIdDocument(nombre);
   }
 
   Future<void> signOut() async {
@@ -72,8 +70,15 @@ class UserRepository {
     await databaseReference
         .collection("users")
         .document(uid)
-        .setData({'email': user.email, 'uid': user.uid,'nombre':nombre});
+        .setData({'email': user.email, 'uid': user.uid, 'nombre': nombre});
   }
 
+  Future<void> putSaldoFirebase(String saldo) async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
 
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+    await databaseReference.collection("users").document(uid)
+      .setData({'saldo': saldo}, merge: true);
+  }
 }

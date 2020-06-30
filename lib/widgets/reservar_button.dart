@@ -5,11 +5,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class ReservarButton extends StatelessWidget {
   final LatLng coords;
   final VoidCallback callback;
+  final String text;
 
   const ReservarButton({
     Key key,
     this.coords,
-    this.callback,
+    this.callback, this.text,
   }) : super(key: key);
 
   @override
@@ -26,7 +27,7 @@ class ReservarButton extends StatelessWidget {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(100)),
                 color: Colors.indigo),
-            child: Text('reservar'.toUpperCase(),
+            child: Text(text.toUpperCase(),
                 style: GoogleFonts.patuaOne(
                     fontSize: 15,
                     fontWeight: FontWeight.w400,

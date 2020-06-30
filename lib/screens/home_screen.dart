@@ -265,7 +265,7 @@ class HomePageState extends State<HomePage>
                         ),
                         Align(
                             alignment: Alignment.center,
-                            child: ReservarButton(
+                            child: ReservarButton(text: 'Reservar',
                               callback: () {
                                 inputData();
                                 showDialog(
