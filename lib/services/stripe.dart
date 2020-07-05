@@ -12,90 +12,68 @@ class StripeTransactionResponse {
 class StripeService {
   static String apiBase = 'https://api.stripe.com/v1';
   static String paymentApiUrl = '${StripeService.apiBase}/payment_intents';
-  static String secret = 'sk_test_51GyLIoFiQbC4xCdh4oQVV2MzsH1BrjwPu7cvmKzjZ98VXWOvow6J9eeNad7mkBj9ybEFhdTwkAvBPpnv9q7pQBML00lzsGwGcQ';
+  static String secret =
+      'sk_test_51GyLIoFiQbC4xCdh4oQVV2MzsH1BrjwPu7cvmKzjZ98VXWOvow6J9eeNad7mkBj9ybEFhdTwkAvBPpnv9q7pQBML00lzsGwGcQ';
   static Map<String, String> headers = {
     'Authorization': 'Bearer ${StripeService.secret}',
     'Content-Type': 'application/x-www-form-urlencoded'
   };
   static init() {
-    StripePayment.setOptions(
-        StripeOptions(
-            publishableKey: "pk_test_51GyLIoFiQbC4xCdhjVHffxnV42SMJlFidkyDAC6FDYLjTjeiY81ttb3MveR3OKKTQgGisY50soccLghFMYlTNUoS007sHHiP0o",
-            merchantId: "Test",
-            androidPayMode: 'test'
-        )
-    );
+    StripePayment.setOptions(StripeOptions(
+        publishableKey:
+            "pk_test_51GyLIoFiQbC4xCdhjVHffxnV42SMJlFidkyDAC6FDYLjTjeiY81ttb3MveR3OKKTQgGisY50soccLghFMYlTNUoS007sHHiP0o",
+        merchantId: "Test",
+        androidPayMode: 'test'));
   }
 
-  static Future<StripeTransactionResponse> payViaExistingCard({String amount, String currency, CreditCard card}) async{
+  static Future<StripeTransactionResponse> payViaExistingCard(
+      {String amount, String currency, CreditCard card}) async {
     try {
       var paymentMethod = await StripePayment.createPaymentMethod(
-          PaymentMethodRequest(card: card)
-      );
-      var paymentIntent = await StripeService.createPaymentIntent(
-          amount,
-          currency
-      );
-      var response = await StripePayment.confirmPaymentIntent(
-          PaymentIntent(
-              clientSecret: paymentIntent['client_secret'],
-              paymentMethodId: paymentMethod.id
-          )
-      );
+          PaymentMethodRequest(card: card));
+      var paymentIntent =
+          await StripeService.createPaymentIntent(amount, currency);
+      var response = await StripePayment.confirmPaymentIntent(PaymentIntent(
+          clientSecret: paymentIntent['client_secret'],
+          paymentMethodId: paymentMethod.id));
       if (response.status == 'succeeded') {
         return new StripeTransactionResponse(
-            message: 'Se te ha cargado el saldo con $amount€',
-            success: true
-        );
+            message: 'Se te ha cargado el saldo con $amount€', success: true);
       } else {
         return new StripeTransactionResponse(
-            message: 'Transaction failed',
-            success: false
-        );
+            message: 'Transaction failed', success: false);
       }
-    } on PlatformException catch(err) {
+    } on PlatformException catch (err) {
       return StripeService.getPlatformExceptionErrorResult(err);
     } catch (err) {
       return new StripeTransactionResponse(
-          message: 'Transaction failed: ${err.toString()}',
-          success: false
-      );
+          message: 'Transaction failed: ${err.toString()}', success: false);
     }
   }
 
-  static Future<StripeTransactionResponse> payWithNewCard({String amount, String currency}) async {
+  static Future<StripeTransactionResponse> payWithNewCard(
+      {String amount, String currency}) async {
     try {
       var paymentMethod = await StripePayment.paymentRequestWithCardForm(
-          CardFormPaymentRequest()
-      );
-      var paymentIntent = await StripeService.createPaymentIntent(
-          amount,
-          currency
-      );
-      var response = await StripePayment.confirmPaymentIntent(
-          PaymentIntent(
-              clientSecret: paymentIntent['client_secret'],
-              paymentMethodId: paymentMethod.id
-          )
-      );
+          CardFormPaymentRequest());
+      var paymentIntent =
+          await StripeService.createPaymentIntent(amount, currency);
+      var response = await StripePayment.confirmPaymentIntent(PaymentIntent(
+          clientSecret: paymentIntent['client_secret'],
+          paymentMethodId: paymentMethod.id));
       if (response.status == 'succeeded') {
+
         return new StripeTransactionResponse(
-            message: 'Se te ha cargado el saldo con $amount€',
-            success: true
-        );
+            message: 'Se te ha cargado el saldo con $amount€', success: true);
       } else {
         return new StripeTransactionResponse(
-            message: 'Transaction failed',
-            success: false
-        );
+            message: 'Error', success: false);
       }
-    } on PlatformException catch(err) {
+    } on PlatformException catch (err) {
       return StripeService.getPlatformExceptionErrorResult(err);
     } catch (err) {
       return new StripeTransactionResponse(
-          message: 'Transaction failed: ${err.toString()}',
-          success: false
-      );
+          message: 'Error', success: false);
     }
   }
 
@@ -105,24 +83,19 @@ class StripeService {
       message = 'Transaction cancelled';
     }
 
-    return new StripeTransactionResponse(
-        message: message,
-        success: false
-    );
+    return new StripeTransactionResponse(message: message, success: false);
   }
 
-  static Future<Map<String, dynamic>> createPaymentIntent(String amount, String currency) async {
+  static Future<Map<String, dynamic>> createPaymentIntent(
+      String amount, String currency) async {
     try {
       Map<String, dynamic> body = {
         'amount': amount,
         'currency': currency,
         'payment_method_types[]': 'card'
       };
-      var response = await http.post(
-          StripeService.paymentApiUrl,
-          body: body,
-          headers: StripeService.headers
-      );
+      var response = await http.post(StripeService.paymentApiUrl,
+          body: body, headers: StripeService.headers);
       return jsonDecode(response.body);
     } catch (err) {
       print('err charging user: ${err.toString()}');

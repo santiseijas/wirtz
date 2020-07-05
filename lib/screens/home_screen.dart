@@ -3,11 +3,14 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:wirtz/models/markers_repository.dart';
 import 'package:wirtz/models/user_repository.dart';
+import 'package:wirtz/screens/ajustes_screen.dart';
+import 'package:wirtz/widgets/appBar.dart';
 import 'package:wirtz/widgets/dialog.dart';
 import 'package:wirtz/widgets/drawer.dart';
 import 'package:wirtz/widgets/reservar_button.dart';
@@ -28,7 +31,6 @@ class HomePageState extends State<HomePage>
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   Position position;
   BitmapDescriptor myIcon;
-  BitmapDescriptor myIcon2;
   Tween<Offset> _tween = Tween(begin: Offset(0, 1), end: Offset(0, 0));
   AnimationController animationController;
   Duration _duration = Duration(milliseconds: 500);
@@ -36,26 +38,28 @@ class HomePageState extends State<HomePage>
   String calle;
   LatLng coords;
   var longitud;
+  int bateria;
+  int autonomia;
+  String matricula;
+  String nombre = '';
+  String saldo = '';
+  bool verificado = false;
 
   @override
   void initState() {
     _getLocation();
-    populateClients();
+    cargarMarkers();
+    cargarDatosUsuario();
     animationController = AnimationController(vsync: this, duration: _duration);
 
     BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), 'assets/images/destination_map_marker.png')
+            ImageConfiguration(), 'assets/images/destination_map_marker.png')
         .then((onValue) {
       myIcon = onValue;
     });
-    BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), 'assets/images/destination_map_marker.png')
-        .then((onValue) {
-      myIcon2 = onValue;
-    });
   }
 
-  populateClients() {
+  cargarMarkers() {
     Firestore.instance.collection('markers').getDocuments().then((docs) {
       if (docs.documents.isNotEmpty) {
         for (int i = 0; i < docs.documents.length; ++i) {
@@ -63,6 +67,21 @@ class HomePageState extends State<HomePage>
             initMarker(docs.documents[i].data, docs.documents[i].documentID);
         }
       }
+    });
+  }
+
+  cargarDatosUsuario() async {
+    final firestoreInstance = Firestore.instance;
+    var firebaseUser = await FirebaseAuth.instance.currentUser();
+
+    firestoreInstance
+        .collection("users")
+        .document(firebaseUser.uid)
+        .get()
+        .then((value) {
+      nombre = value.data['nombre'];
+      saldo = value.data['saldo'];
+      verificado = value.data['verificado'];
     });
   }
 
@@ -74,6 +93,9 @@ class HomePageState extends State<HomePage>
         setState(() {
           documentId = markeridVal.toString();
           calle = request['calle'];
+          bateria = request['bateria'];
+          autonomia = request['autonomia'];
+          matricula = request['matricula'];
           coords =
               LatLng(request['coord'].latitude, request['coord'].longitude);
           if (animationController.isDismissed) animationController.forward();
@@ -81,10 +103,6 @@ class HomePageState extends State<HomePage>
       },
       consumeTapEvents: true,
       icon: myIcon,
-      infoWindow: InfoWindow(
-        title: 'PlatformMarker',
-        snippet: "Hi I'm a Platform Marker",
-      ),
       markerId: markerId,
       position: LatLng(request['coord'].latitude, request['coord'].longitude),
     );
@@ -98,81 +116,73 @@ class HomePageState extends State<HomePage>
     return Material(
       child: Scaffold(
           drawer: MyDrawer(
+            nombre: nombre,
+            saldo: saldo,
             userRepository: widget.userRepository,
           ),
-          appBar: AppBar(
-            centerTitle: true,
-            title: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                text: 'Wirtz',
-                style: GoogleFonts.patuaOne(
-                  fontSize: 35,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            backgroundColor: Colors.indigo,
-          ),
-          body: Stack(
-            children: <Widget>[
-              _buildGoogleMap(context),
-              SizedBox.expand(
-                child: SlideTransition(
-                  position: _tween.animate(animationController),
-                  child: DraggableScrollableSheet(
-                    initialChildSize: .30,
-                    minChildSize: .1,
-                    maxChildSize: .30,
-                    builder: (BuildContext context,
-                        ScrollController scrollController) {
-                      return Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: new BorderRadius.only(
-                              topLeft: const Radius.circular(30.0),
-                              topRight: const Radius.circular(30.0),
-                            )),
-                        child: _panel(scrollController, documentId),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
-          )),
+          appBar: MyAppBar(),
+          body: verificado
+              ? Stack(
+                  children: <Widget>[
+                    _buildGoogleMap(context),
+                    SizedBox.expand(
+                      child: SlideTransition(
+                        position: _tween.animate(animationController),
+                        child: DraggableScrollableSheet(
+                          initialChildSize: .30,
+                          minChildSize: .1,
+                          maxChildSize: .30,
+                          builder: (BuildContext context,
+                              ScrollController scrollController) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: new BorderRadius.only(
+                                    topLeft: const Radius.circular(30.0),
+                                    topRight: const Radius.circular(30.0),
+                                  )),
+                              child: _panel(scrollController, documentId),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : SubirImagen(
+                  userRepository: widget.userRepository,
+                )),
     );
   }
 
   Widget _buildGoogleMap(BuildContext context) {
     return position == null
         ? Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: Center(
-          child: Container(
-            child: CircularProgressIndicator(),
-          ),
-        ))
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Center(
+              child: Container(
+                child: CircularProgressIndicator(),
+              ),
+            ))
         : Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: GoogleMap(
-        zoomControlsEnabled: false, myLocationEnabled: true,
-        // myLocationEnabled: true,
-        initialCameraPosition: CameraPosition(
-          target: LatLng(position.latitude, position.longitude),
-          zoom: 15,
-          tilt: 30.0,
-          bearing: 270.0,
-        ),
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-        markers: Set<Marker>.of(markers.values),
-      ),
-    );
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: GoogleMap(
+              zoomControlsEnabled: false, myLocationEnabled: true,
+              // myLocationEnabled: true,
+              initialCameraPosition: CameraPosition(
+                target: LatLng(position.latitude, position.longitude),
+                zoom: 15,
+                tilt: 30.0,
+                bearing: 270.0,
+              ),
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
+              markers: Set<Marker>.of(markers.values),
+            ),
+          );
   }
 
   void _getLocation() async {
@@ -180,8 +190,8 @@ class HomePageState extends State<HomePage>
     res == null
         ? CircularProgressIndicator()
         : setState(() {
-      position = res;
-    });
+            position = res;
+          });
   }
 
   Widget _panel(ScrollController sc, String documentId) {
@@ -207,17 +217,12 @@ class HomePageState extends State<HomePage>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Image.asset(
-                          "assets/images/moto.png",
-                          height: 120,
-                          width: 120,
-                        ),
-                      ],
+                    Image.asset(
+                      "assets/images/moto.png",
+                      height: 100,
                     ),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
                           calle.toUpperCase(),
@@ -227,29 +232,39 @@ class HomePageState extends State<HomePage>
                               fontStyle: FontStyle.italic,
                               color: Colors.indigo),
                         ),
-                        Container(
-                          child: Row(
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Text('100%',
-                                      style: GoogleFonts.patuaOne(
-                                        fontSize: 20,
-                                        fontStyle: FontStyle.italic,
-                                      )),
-                                  Icon(
-                                    Icons.battery_full,
-                                    color: Colors.green,
+                        Text(
+                          matricula,
+                          style: GoogleFonts.patuaOne(
+                              fontSize: 20,
+                              fontStyle: FontStyle.normal,
+                              color: Colors.black),
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Text(bateria.toString() + '%',
+                                style: GoogleFonts.patuaOne(
+                                  fontSize: 19,
+                                  fontStyle: FontStyle.italic,
+                                )),
+                            bateria > 50
+                                ? IconButton(
+                                    icon: FaIcon(
+                                      FontAwesomeIcons.batteryFull,
+                                      color: Colors.green,
+                                    ),
+                                  )
+                                : IconButton(
+                                    icon: FaIcon(
+                                      FontAwesomeIcons.batteryHalf,
+                                      color: Colors.red,
+                                    ),
                                   ),
-                                ],
-                              ),
-                              Text('35 km'.toUpperCase(),
-                                  style: GoogleFonts.patuaOne(
-                                    fontSize: 20,
-                                    fontStyle: FontStyle.italic,
-                                  )),
-                            ],
-                          ),
+                            Text(autonomia.toString() + 'km'.toUpperCase(),
+                                style: GoogleFonts.patuaOne(
+                                  fontSize: 19,
+                                  fontStyle: FontStyle.italic,
+                                )),
+                          ],
                         ),
                       ],
                     ),
@@ -264,20 +279,23 @@ class HomePageState extends State<HomePage>
                           width: 10,
                         ),
                         Align(
-                            alignment: Alignment.center,
-                            child: ReservarButton(text: 'Reservar',
-                              callback: () {
-                                inputData();
-                                showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return MyDialog(
-                                        coords: coords,
-                                      );
-                                    });
-                              },
-                              coords: coords,
-                            )),
+                          alignment: Alignment.center,
+                          child: ReservarButton(
+                                  text: 'Reservar',
+                                  callback: () {
+                                    reservar();
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return MyDialog(
+                                            coords: coords,
+                                          );
+                                        });
+                                  },
+                                  coords: coords,
+                                )
+
+                        ),
                       ],
                     ),
                   ),
@@ -288,7 +306,40 @@ class HomePageState extends State<HomePage>
         ));
   }
 
-  Future<String> inputData() async {
+  Widget widgetBat(BuildContext context) {
+    IconButton icono;
+    if (bateria >= 90) {
+      icono = IconButton(
+        icon: FaIcon(
+          FontAwesomeIcons.batteryHalf,
+          color: Colors.red,
+        ),
+      );
+    } else if (bateria < 89 && bateria > 50) {
+      icono = IconButton(
+        icon: FaIcon(
+          FontAwesomeIcons.batteryThreeQuarters,
+          color: Colors.red,
+        ),
+      );
+    } else if (bateria < 49 && bateria > 20) {
+      icono = IconButton(
+        icon: FaIcon(
+          FontAwesomeIcons.batteryQuarter,
+          color: Colors.red,
+        ),
+      );
+    } else if (bateria < 0 && bateria > 20) {
+      icono = IconButton(
+        icon: FaIcon(
+          FontAwesomeIcons.batteryEmpty,
+          color: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<String> reservar() async {
     final FirebaseUser user = await FirebaseAuth.instance.currentUser();
     final String uid = user.uid.toString();
     final String email = user.email;
@@ -302,7 +353,6 @@ class HomePageState extends State<HomePage>
 /*
     UserRepository.updateUser(id, uid);
 */
-    setState(() {});
     return uid;
   }
 }

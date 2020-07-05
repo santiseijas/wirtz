@@ -151,7 +151,7 @@ class _LoginFormState extends State<LoginForm> {
           Container(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
+              children: <Widget>[SizedBox(height: 15,),
                 LoginButton(
                   onPressed:
                       isLoginButtonEnabled(state) ? _onFormSubmitted : null,

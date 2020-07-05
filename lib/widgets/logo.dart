@@ -8,9 +8,7 @@ class Logo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(backgroundColor: Colors.transparent,
-      radius: 100,
-      child: Column(
+    return  Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Image.asset(
             'assets/images/logo0.png',
@@ -18,7 +16,6 @@ class Logo extends StatelessWidget {
             fit: BoxFit.cover,
           ),
           RichText(
-            textAlign: TextAlign.center,
             text: TextSpan(
               text: 'WirtZ',
               style: GoogleFonts.righteous(
@@ -29,7 +26,7 @@ class Logo extends StatelessWidget {
             ),
           ),
         ],
-      ),
+
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:wirtz/models/user_repository.dart';
 import 'package:wirtz/screens/register_screen.dart';
+import 'package:wirtz/widgets/login_button.dart';
 import 'package:wirtz/widgets/logo.dart';
 
 import 'login_screen.dart';
@@ -22,7 +22,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -51,13 +50,12 @@ class _SplashScreenState extends State<SplashScreen> {
             SizedBox(
               height: 150,
             ),
-          Logo()
-            ,SizedBox(
-              height: MediaQuery.of(context).size.height * 0.3
-              ,
+            Logo(),
+            SizedBox(
+              height:30,
             ),
-            InkWell(
-              onTap: () {
+            LoginButton(
+              onPressed: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -65,48 +63,18 @@ class _SplashScreenState extends State<SplashScreen> {
                               userRepository: _userRepository,
                             )));
               },
-              child: Container(
-                width: 200,
-                height: 60,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(100)),
-                    color: Colors.white),
-                child: Text(
-                  'Login',
-                  style: GoogleFonts.crimsonText(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic,
-                      color: Colors.black),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            InkWell(
-              onTap: () {
+              text: 'Login',
+            ),SizedBox(height: 10,),
+            LoginButton(
+              onPressed: () {
                 Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => RegisterScreen(userRepository: _userRepository,)));
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => RegisterScreen(
+                              userRepository: _userRepository,
+                            )));
               },
-              child: Container(
-                height: 60,
-                width: 200,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
-                  border: Border.all(color: Colors.white, width: 3),
-                ),
-                child: Text(
-                  'Registrate',
-                  style: GoogleFonts.crimsonText(
-                      fontSize: 25,
-                      fontWeight: FontWeight.w700,
-                      fontStyle: FontStyle.italic,
-                      color: Colors.white),
-                ),
-              ),
+              text: 'Registrate',
             )
           ],
         ),

@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 import 'package:wirtz/models/user_repository.dart';
 import 'package:wirtz/services/stripe.dart';
+import 'package:wirtz/widgets/appBar.dart';
 import 'package:wirtz/widgets/reservar_button.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -26,19 +24,38 @@ class PaymentScreenState extends State<PaymentScreen> {
   }
 
   payViaNewCard(BuildContext context, String amount) async {
-    ProgressDialog dialog = new ProgressDialog(context);
-    dialog.style(message: 'Comprobando datos...');
-    await dialog.show();
     var response =
         await StripeService.payWithNewCard(amount: amount, currency: 'EUR');
-    await dialog.hide();
-    final snackBar = SnackBar(content: Text(response.message),
+    if (!response.success) {
+      final snackBar = SnackBar(
+        content: Text(response.message),
+        duration: new Duration(milliseconds: 5000),
+        backgroundColor: Colors.red,
+      );
+      globalKey.currentState.showSnackBar(snackBar);
+    } else {
+      final snackBar = SnackBar(
+        content: Text(response.message),
+        duration: new Duration(milliseconds: 5000),
+        backgroundColor: Colors.indigoAccent,
+      );
+      globalKey.currentState.showSnackBar(snackBar);
+      widget.userRepository.putSaldoFirebase(amount);
+    }
+/*
+    final snackBar = SnackBar(
+      content: Text(response.message),
       duration:
-      new Duration(milliseconds: response.success == true ? 1200 : 6000),
+          new Duration(milliseconds: response.success == true ? 1200 : 6000),
+      backgroundColor:
+          response.success == true ? Colors.indigoAccent : Colors.red,
     );
     globalKey.currentState.showSnackBar(snackBar);
+    if (response.success) {
+      //TODO
+      widget.userRepository.putSaldoFirebase(amount);
 
-    widget.userRepository.putSaldoFirebase(amount);
+  }*/
   }
 
   @override
@@ -51,21 +68,7 @@ class PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: globalKey,
-      appBar: AppBar(
-        centerTitle: true,
-        title: RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-            text: 'Wirtz',
-            style: GoogleFonts.patuaOne(
-              fontSize: 35,
-              fontWeight: FontWeight.w900,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        backgroundColor: Colors.indigo,
-      ),
+      appBar: MyAppBar(),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(40, 200, 40, 20),
         child: Column(

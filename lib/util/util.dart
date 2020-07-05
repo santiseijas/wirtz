@@ -1,64 +1,71 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
-class Util extends StatefulWidget {
+class Option1 extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _Option1State createState() => _Option1State();
 }
 
-class _HomePageState extends State<Util> with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  Duration _duration = Duration(milliseconds: 500);
-  Tween<Offset> _tween = Tween(begin: Offset(0, 1), end: Offset(0, 0));
+class _Option1State extends State<Option1> with TickerProviderStateMixin {
+  Animation<double> animation;
+  AnimationController animationController;
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    _controller = AnimationController(vsync: this, duration: _duration);
+
+    animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 1));
+    animation = Tween<double>(begin: 0, end: -300).animate(animationController)
+      ..addListener(() {
+        setState(() {});
+      });
+
+    animationController.forward();
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: GestureDetector(
-        child: FloatingActionButton(
-          child: AnimatedIcon(
-              icon: AnimatedIcons.menu_close, progress: _controller),
-          elevation: 5,
-          backgroundColor: Colors.deepOrange,
-          foregroundColor: Colors.white,
-          onPressed: () async {
-            if (_controller.isDismissed)
-              _controller.forward();
-            else if (_controller.isCompleted) _controller.reverse();
-          },
-        ),
-      ),
-      body: SizedBox.expand(
-        child: Stack(
-          children: <Widget>[
-            FlutterLogo(size: 500),
-            SizedBox.expand(
-              child: SlideTransition(
-                position: _tween.animate(_controller),
-                child: DraggableScrollableSheet(
-                  builder: (BuildContext context,
-                      ScrollController scrollController) {
-                    return Container(
-                      color: Colors.blue[800],
-                      child: ListView.builder(
-                        controller: scrollController,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Container(height: 200,color: Colors.red,);
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
+    return Stack(
+      children: <Widget>[
+
+        Align(
+          alignment: AlignmentDirectional(0,0.7),
+          child: Transform.translate(
+            offset: Offset(0, animation.value),
+            child: Container(
+              height: 250,
+              width: 170,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/logo0.png'),
+                  )),
             ),
-          ],
+          ),
         ),
-      ),
+        Align(
+          alignment: AlignmentDirectional.bottomCenter,
+          child: RaisedButton(
+            onPressed: () {
+              animationController.forward();
+            },
+            child: Text('Go'),
+            color: Colors.red,
+            textColor: Colors.yellowAccent,
+            shape: BeveledRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20))),
+          ),
+        )
+      ],
     );
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
   }
 }

@@ -70,7 +70,7 @@ class UserRepository {
     await databaseReference
         .collection("users")
         .document(uid)
-        .setData({'email': user.email, 'uid': user.uid, 'nombre': nombre});
+        .setData({'email': user.email, 'uid': user.uid, 'nombre': nombre,'saldo':'0','verificado':false});
   }
 
   Future<void> putSaldoFirebase(String saldo) async {
@@ -78,7 +78,8 @@ class UserRepository {
 
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
+ 
     await databaseReference.collection("users").document(uid)
-      .setData({'saldo': saldo}, merge: true);
+        .updateData({'saldo': saldo});
   }
 }

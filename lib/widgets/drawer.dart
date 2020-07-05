@@ -1,33 +1,28 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wirtz/bloc/authentication/authentication_bloc.dart';
 import 'package:wirtz/bloc/authentication/bloc.dart';
 import 'package:wirtz/models/user_repository.dart';
+import 'package:wirtz/screens/ajustes_screen.dart';
 import 'package:wirtz/screens/payment_screen.dart';
 
 class MyDrawer extends StatefulWidget {
   final UserRepository userRepository;
+  final String nombre;
+  final String saldo;
 
-  const MyDrawer({Key key, this.userRepository}) : super(key: key);
+  const MyDrawer({Key key, this.userRepository,this.saldo,this.nombre}) : super(key: key);
 
   @override
   _MyDrawerState createState() => _MyDrawerState();
 }
 
 class _MyDrawerState extends State<MyDrawer> {
-  String nombre;
-  String saldo;
-  @override
-  void initState() {
-    getCurrentUser();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
+    //getCurrentUser();
+
     return Drawer(
         child: Container(
       color: Colors.white,
@@ -56,8 +51,12 @@ class _MyDrawerState extends State<MyDrawer> {
               icon: Icons.book,
               text: 'guia',
               onTap: () {
-                //getCurrentUser();
-//                widget.userRepository.getUserId();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SubirImagen(
+                              userRepository: widget.userRepository,
+                            )));
               }),
           _createDrawerItem(icon: Icons.help, text: 'ayuda'),
           Divider(
@@ -83,12 +82,12 @@ class _MyDrawerState extends State<MyDrawer> {
               fit: BoxFit.fill,
               height: 80,
             ),
-            Text(nombre ?? "Nombre Desconocido".toUpperCase(),
+            Text(widget.nombre.toUpperCase() ?? "Nombre Desconocido".toUpperCase(),
                 style: GoogleFonts.patuaOne(
                     fontSize: 20,
                     fontStyle: FontStyle.italic,
                     color: Colors.white)),
-            Text('Saldo: $saldo€'.toUpperCase(),
+            Text('Saldo:'+widget.saldo+'€'.toUpperCase(),
                 style: GoogleFonts.patuaOne(
                     fontSize: 20,
                     fontStyle: FontStyle.italic,
@@ -144,7 +143,7 @@ class _MyDrawerState extends State<MyDrawer> {
     );
   }
 
-  getCurrentUser() async {
+ /* getCurrentUser() async {
     final firestoreInstance = Firestore.instance;
     var firebaseUser = await FirebaseAuth.instance.currentUser();
 
@@ -153,8 +152,8 @@ class _MyDrawerState extends State<MyDrawer> {
         .document(firebaseUser.uid)
         .get()
         .then((value) {
-      nombre = value.data['nombre'];
-      saldo = value.data['saldo'];
+      widget.nombre = value.data['nombre'];
+      widget.saldo = value.data['saldo'];
     });
-  }
+  }*/
 }

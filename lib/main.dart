@@ -42,7 +42,7 @@ class App extends StatelessWidget {
             return Intro(userRepository: _userRepository,);
           }
           if (state is Authenticated) {
-            return HomePage(userRepository: _userRepository,);
+            return new HomePage(userRepository: _userRepository,);
           }
 
         },

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:wirtz/models/user_repository.dart';
 import 'package:wirtz/screens/splash_screen.dart';
 import 'package:wirtz/widgets/logo.dart';
@@ -22,10 +21,9 @@ class _IntroState extends State<Intro> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Timer(
-        Duration(seconds: 1),
+        Duration(seconds: 2),
             () => Navigator.push(
             context, MaterialPageRoute(builder: (context) => SplashScreen(userRepository: _userRepository,))));
   }

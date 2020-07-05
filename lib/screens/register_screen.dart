@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,7 +6,6 @@ import 'package:wirtz/bloc/authentication/bloc.dart';
 import 'package:wirtz/bloc/register/bloc.dart';
 import 'package:wirtz/bloc/register/register_bloc.dart';
 import 'package:wirtz/widgets/login_button.dart';
-import 'package:wirtz/widgets/password_form.dart';
 
 import '../models/user_repository.dart';
 
@@ -141,28 +139,9 @@ class _RegisterFormState extends State<RegisterForm> {
                             ),
                           ),
                         ),
-                        TextForm(
-                          controller: _userNameController,
-                          text: 'Nombre',
-                          icon: Icons.email,
-                          oscureText: false,
-                        ),
-                        TextForm(
-                          controller: _emailController,
-                          text: 'Email',
-                          icon: Icons.email,
-                          oscureText: false,
-                          type: TextInputType.emailAddress,
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        TextForm(
-                          controller: _passwordController,
-                          text: 'Contraseña',
-                          icon: Icons.lock,
-                          oscureText: true,
-                        ),
+                        nombreInput(),
+                        emailInput(state),
+                        passInput(state),
                         Container(
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
                           alignment: Alignment.center,
@@ -193,6 +172,110 @@ class _RegisterFormState extends State<RegisterForm> {
     );
   }
 
+  Widget nombreInput() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0.0),
+      child: Container(
+        child: TextFormField(
+          controller: _userNameController,
+          decoration: new InputDecoration(
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.indigo),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
+            prefixIcon: Icon(
+              Icons.email,
+              color: Colors.white,
+            ),
+            labelText: "Nombre",
+            labelStyle :GoogleFonts.crimsonText(
+              fontSize: 30,
+              fontWeight: FontWeight.w700,
+              fontStyle: FontStyle.italic,
+              color: Colors.white),
+          ),
+          autovalidate: true,
+          autocorrect: false,
+          /*validator: (_) {
+            return !state.isEmailValid ? 'Invalid Email' : null;
+          },*/
+        ),
+      ),
+    );
+  }
+
+  Padding emailInput(RegisterState state) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0.0),
+      child: Container(
+        child: TextFormField(
+          controller: _emailController,
+          decoration: new InputDecoration(
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.indigo),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
+            prefixIcon: Icon(
+              Icons.email,
+              color: Colors.white,
+            ),
+            labelText: "Email",
+            labelStyle:  GoogleFonts.crimsonText(
+                fontSize: 30,
+                fontWeight: FontWeight.w700,
+                fontStyle: FontStyle.italic,
+                color: Colors.white),
+          ),
+          keyboardType: TextInputType.emailAddress,
+          autovalidate: true,
+          autocorrect: false,
+          /*validator: (_) {
+            return !state.isEmailValid ? 'Invalid Email' : null;
+          },*/
+        ),
+      ),
+    );
+  }
+
+  Padding passInput(RegisterState state) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0.0),
+        child: Container(
+          child: TextFormField(
+            controller: _passwordController,
+            decoration: new InputDecoration(
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.indigo),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+              ),
+              focusColor: Colors.red,
+              prefixIcon: Icon(
+                Icons.lock,
+                color: Colors.white,
+              ),
+              labelText: "Contraseña",
+              labelStyle:  GoogleFonts.crimsonText(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.white),
+            ),
+            obscureText: true,
+            autovalidate: true,
+            autocorrect: false,
+            /*validator: (_) {
+              return !state.isPasswordValid ? 'Invalid Password' : null;
+            },*/
+          ),
+        ));
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -213,11 +296,11 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   void _onFormSubmitted() {
-
 /*    UserUpdateInfo userUpdateInfo = new UserUpdateInfo();
     userUpdateInfo.displayName = _userNameController.text;*/
     _registerBloc.add(
-      Submitted(nombre:_userNameController.text ,
+      Submitted(
+        nombre: _userNameController.text,
         email: _emailController.text,
         password: _passwordController.text,
       ),

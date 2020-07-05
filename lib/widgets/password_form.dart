@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TextForm extends StatelessWidget {
   final TextEditingController controller;
@@ -27,11 +28,10 @@ class TextForm extends StatelessWidget {
           color: Colors.white,
         ),
         labelText: text,
-        labelStyle: TextStyle(
-          color: Colors.white,
-          fontSize: 20,
-          fontWeight: FontWeight.normal,
-        ),
+        labelStyle: GoogleFonts.patuaOne(
+            fontSize: 20,
+            fontStyle: FontStyle.italic,
+            color: Colors.white),
         focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(
           color: Colors.white,
