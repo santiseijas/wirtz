@@ -22,6 +22,10 @@ class SubirImagen extends StatefulWidget {
 class _SubirImagenState extends State<SubirImagen> {
   File imagenFile;
   File imagenFile2;
+  StorageUploadTask uploadTask;
+  StorageUploadTask uploadTask2;
+  final FirebaseStorage storage =
+      FirebaseStorage(storageBucket: 'gs://beeto-f3425.appspot.com');
 
   final picker = ImagePicker();
 
@@ -54,49 +58,6 @@ class _SubirImagenState extends State<SubirImagen> {
       imagenFile = null;
       imagenFile2 = null;
     });
-  }
-
-  Future<Null> _cropImage() async {
-    File croppedFile = await ImageCropper.cropImage(
-        sourcePath: imagenFile.path,
-        aspectRatioPresets: Platform.isAndroid
-            ? [
-                CropAspectRatioPreset.square,
-                CropAspectRatioPreset.ratio3x2,
-                CropAspectRatioPreset.original,
-                CropAspectRatioPreset.ratio4x3,
-                CropAspectRatioPreset.ratio16x9
-              ]
-            : [
-                CropAspectRatioPreset.original,
-                CropAspectRatioPreset.square,
-                CropAspectRatioPreset.ratio3x2,
-                CropAspectRatioPreset.ratio4x3,
-                CropAspectRatioPreset.ratio5x3,
-                CropAspectRatioPreset.ratio5x4,
-                CropAspectRatioPreset.ratio7x5,
-                CropAspectRatioPreset.ratio16x9
-              ],
-        androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Edita la foto',
-            toolbarColor: Colors.indigo,
-            toolbarWidgetColor: Colors.white,
-            backgroundColor: Colors.indigo,
-            cropGridColor: Colors.white,
-            activeControlsWidgetColor: Colors.indigoAccent,
-            initAspectRatio: CropAspectRatioPreset.original,
-            dimmedLayerColor: Colors.white,
-            statusBarColor: Colors.indigo,
-            lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          title: 'Cropper',
-        ));
-    if (croppedFile != null) {
-      imagenFile = croppedFile;
-      setState(() {
-        imagenFile = croppedFile ?? imagenFile;
-      });
-    }
   }
 
   @override
@@ -134,10 +95,11 @@ class _SubirImagenState extends State<SubirImagen> {
                   fontSize: 23,
                   fontStyle: FontStyle.italic,
                   color: Colors.black)),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              LoginButton(
+              MyButton(color: Colors.indigoAccent,
                 onPressed: () {
                   showDialog(
                       context: context,
@@ -148,13 +110,15 @@ class _SubirImagenState extends State<SubirImagen> {
                             Column(
                               children: <Widget>[
                                 IconButton(
-                                  icon: Icon(
-                                    Icons.picture_in_picture,
-                                    color: Colors.black,
-                                  ),
-                                  onPressed: () =>
-                                      pickImage(ImageSource.gallery),
-                                ),
+                                    icon: Icon(
+                                      Icons.picture_in_picture,
+                                      color: Colors.black,
+                                    ),
+                                    onPressed: () {
+                                      pickImage(ImageSource.gallery);
+                                      this.setState(() {});
+                                      Navigator.of(context).pop();
+                                    }),
                                 Text('galeria'.toUpperCase(),
                                     style: GoogleFonts.patuaOne(
                                         letterSpacing: .5,
@@ -166,14 +130,17 @@ class _SubirImagenState extends State<SubirImagen> {
                             Column(
                               children: <Widget>[
                                 IconButton(
-                                  icon: Icon(
-                                    Icons.camera,
-                                    color: Colors.black,
-                                  ),
-                                  onPressed: () => pickImage(
-                                    ImageSource.camera,
-                                  ),
-                                ),
+                                    icon: Icon(
+                                      Icons.camera,
+                                      color: Colors.black,
+                                    ),
+                                    onPressed: () {
+                                      pickImage(
+                                        ImageSource.camera,
+                                      );
+                                      this.setState(() {});
+                                      Navigator.of(context).pop();
+                                    }),
                                 Text('camara'.toUpperCase(),
                                     style: GoogleFonts.patuaOne(
                                         letterSpacing: .5,
@@ -188,7 +155,7 @@ class _SubirImagenState extends State<SubirImagen> {
                 },
                 text: 'parte de alante',
               ),
-              LoginButton(
+              MyButton(
                 onPressed: () {
                   showDialog(
                       context: context,
@@ -199,13 +166,15 @@ class _SubirImagenState extends State<SubirImagen> {
                             Column(
                               children: <Widget>[
                                 IconButton(
-                                  icon: Icon(
-                                    Icons.picture_in_picture,
-                                    color: Colors.black,
-                                  ),
-                                  onPressed: () =>
-                                      pickImage2(ImageSource.gallery),
-                                ),
+                                    icon: Icon(
+                                      Icons.picture_in_picture,
+                                      color: Colors.black,
+                                    ),
+                                    onPressed: () {
+                                      pickImage2(ImageSource.gallery);
+                                      this.setState(() {});
+                                      Navigator.of(context).pop();
+                                    }),
                                 Text('galeria'.toUpperCase(),
                                     style: GoogleFonts.patuaOne(
                                         letterSpacing: .5,
@@ -217,14 +186,17 @@ class _SubirImagenState extends State<SubirImagen> {
                             Column(
                               children: <Widget>[
                                 IconButton(
-                                  icon: Icon(
-                                    Icons.camera,
-                                    color: Colors.black,
-                                  ),
-                                  onPressed: () => pickImage2(
-                                    ImageSource.camera,
-                                  ),
-                                ),
+                                    icon: Icon(
+                                      Icons.camera,
+                                      color: Colors.black,
+                                    ),
+                                    onPressed: () {
+                                      pickImage2(
+                                        ImageSource.camera,
+                                      );
+                                      this.setState(() {});
+                                      Navigator.of(context).pop();
+                                    }),
                                 Text('camara'.toUpperCase(),
                                     style: GoogleFonts.patuaOne(
                                         letterSpacing: .5,
@@ -240,81 +212,25 @@ class _SubirImagenState extends State<SubirImagen> {
                 text: 'parte de atras',
               ),
             ],
+          ),SizedBox(height: 20,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              decideImage(imagenFile),
+              decideImage(imagenFile2)
+            ],
           ),
-          if (imagenFile != null && imagenFile2 != null) ...[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Image.file(
-                  imagenFile,
-                  fit: BoxFit.contain,
-                  width: MediaQuery.of(context).size.width * .4,
-                  height: MediaQuery.of(context).size.height * 0.18,
-                ),
-                Image.file(
-                  imagenFile2,
-                  fit: BoxFit.contain,
-                  width: MediaQuery.of(context).size.width * .4,
-                  height: MediaQuery.of(context).size.height * 0.18,
-                ),
-              ],
-            ),
-            /* Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  IconButton(
-                    color: Colors.indigo,
-                    icon: Icon(Icons.crop),
-                    onPressed: _cropImage,
-                  ),
-                  SizedBox(
-                    width: 40,
-                  ),
-                  IconButton(
-                    color: Colors.indigo,
-                    iconSize: 30,
-                    icon: Icon(Icons.refresh),
-                    onPressed: clear,
-                  )
-                ],
-              ),
-            ),*/
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Uploader(
-                  file2: imagenFile2,
-                  file: imagenFile,
-                  userRepository: widget.userRepository,
-                ),
-              ],
-            )
-          ],
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(height: 200,),
+              cargarDatos(),
+            ],
+          )
         ],
       ),
     );
   }
-}
-
-class Uploader extends StatefulWidget {
-  final UserRepository userRepository;
-  final File file;
-  final File file2;
-
-  const Uploader({Key key, this.file, this.userRepository, this.file2})
-      : super(key: key);
-  @override
-  _UploaderState createState() => _UploaderState();
-}
-
-class _UploaderState extends State<Uploader> {
-  final FirebaseStorage storage =
-      FirebaseStorage(storageBucket: 'gs://beeto-f3425.appspot.com');
-
-  StorageUploadTask uploadTask;
-  StorageUploadTask uploadTask2;
 
   Future<void> startUpload() async {
     final FirebaseUser user = await FirebaseAuth.instance.currentUser();
@@ -323,14 +239,26 @@ class _UploaderState extends State<Uploader> {
     String filePath2 = 'images/$uid+' + 'detras' '+${DateTime.now()}.png';
 
     setState(() {
-      uploadTask = storage.ref().child(filePath).putFile(widget.file);
-      uploadTask2 = storage.ref().child(filePath2).putFile(widget.file2);
+      uploadTask = storage.ref().child(filePath).putFile(imagenFile);
+      uploadTask2 = storage.ref().child(filePath2).putFile(imagenFile2);
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (uploadTask != null) {
+  Widget decideImage(File imagen) {
+    if (imagen == null) {
+      return Text('Ninguna seleccionada');
+    } else {
+      return Image.file(
+        imagen,
+        fit: BoxFit.contain,
+        width: MediaQuery.of(context).size.width * .4,
+        height: MediaQuery.of(context).size.height * 0.18,
+      );
+    }
+  }
+
+  Widget cargarDatos() {
+    if (uploadTask != null && uploadTask2 != null) {
       return StreamBuilder<StorageTaskEvent>(
         stream: uploadTask.events,
         builder: (context, snapshot) {
@@ -338,30 +266,32 @@ class _UploaderState extends State<Uploader> {
           double progressPercent =
               event != null ? event.bytesTransferred / event.totalByteCount : 0;
           return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              if (uploadTask.isComplete)
+              if (uploadTask.isComplete&&uploadTask2.isComplete)
                 Text('completado'.toUpperCase(),
                     style: GoogleFonts.patuaOne(
                         fontSize: 25,
                         fontStyle: FontStyle.italic,
                         color: Colors.black)),
-              LinearProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation<Color>(Colors.red),
-                value: progressPercent,
-              ),
+              SizedBox(
+                width: 100,
+                child: LinearProgressIndicator(
+                  value: progressPercent,
+                  valueColor: new AlwaysStoppedAnimation<Color>(Colors.red),
+                ),
+              )
             ],
           );
         },
       );
     } else {
-      return LoginButton(
+      return MyButton(
         color: Colors.indigo,
         text: 'sube la foto',
         onPressed: startUpload,
       );
     }
-
   }
 }
+
+

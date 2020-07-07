@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LoginButton extends StatelessWidget {
+class MyButton extends StatelessWidget {
   final VoidCallback _onPressed;
-  final MaterialColor color;
+  final Color color;
   final String text;
 
-  LoginButton({Key key, VoidCallback onPressed, this.text, this.color})
+  MyButton({Key key, VoidCallback onPressed, this.text, this.color})
       : _onPressed = onPressed,
         super(key: key);
 

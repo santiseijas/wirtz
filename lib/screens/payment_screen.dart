@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wirtz/models/user_repository.dart';
+import 'package:wirtz/screens/home_screen.dart';
 import 'package:wirtz/services/stripe.dart';
 import 'package:wirtz/widgets/appBar.dart';
 import 'package:wirtz/widgets/reservar_button.dart';
@@ -68,7 +69,16 @@ class PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: globalKey,
-      appBar: MyAppBar(),
+      appBar: MyAppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage(userRepository:widget.userRepository,)),
+            );          },
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(40, 200, 40, 20),
         child: Column(

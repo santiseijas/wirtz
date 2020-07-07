@@ -145,7 +145,7 @@ class _RegisterFormState extends State<RegisterForm> {
                         Container(
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
                           alignment: Alignment.center,
-                          child: LoginButton(
+                          child: MyButton(
                             onPressed: isRegisterButtonEnabled(state)
                                 ? _onFormSubmitted
                                 : null,

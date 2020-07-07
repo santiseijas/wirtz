@@ -6,6 +6,7 @@ import 'package:wirtz/bloc/authentication/bloc.dart';
 import 'package:wirtz/models/user_repository.dart';
 import 'package:wirtz/screens/ajustes_screen.dart';
 import 'package:wirtz/screens/payment_screen.dart';
+import 'package:wirtz/util/util.dart';
 
 class MyDrawer extends StatefulWidget {
   final UserRepository userRepository;
@@ -58,7 +59,15 @@ class _MyDrawerState extends State<MyDrawer> {
                               userRepository: widget.userRepository,
                             )));
               }),
-          _createDrawerItem(icon: Icons.help, text: 'ayuda'),
+          _createDrawerItem(
+              icon: Icons.book,
+              text: 'ayuda',
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => LandingScreen()));
+              }),
           Divider(
             color: Colors.indigo,
           ),

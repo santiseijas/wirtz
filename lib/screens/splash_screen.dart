@@ -54,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
             SizedBox(
               height:30,
             ),
-            LoginButton(
+            MyButton(
               onPressed: () {
                 Navigator.push(
                     context,
@@ -65,7 +65,7 @@ class _SplashScreenState extends State<SplashScreen> {
               },
               text: 'Login',
             ),SizedBox(height: 10,),
-            LoginButton(
+            MyButton(
               onPressed: () {
                 Navigator.push(
                     context,

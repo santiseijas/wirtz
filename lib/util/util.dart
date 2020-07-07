@@ -1,71 +1,147 @@
-import 'dart:ui';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
-class Option1 extends StatefulWidget {
+class LandingScreen extends StatefulWidget {
   @override
-  _Option1State createState() => _Option1State();
+  _LandingScreenState createState() => _LandingScreenState();
 }
 
-class _Option1State extends State<Option1> with TickerProviderStateMixin {
-  Animation<double> animation;
-  AnimationController animationController;
+class _LandingScreenState extends State<LandingScreen> {
+  File imageFile;
+  File imageFile2;
+  final picker = ImagePicker();
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
 
-    animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 1));
-    animation = Tween<double>(begin: 0, end: -300).animate(animationController)
-      ..addListener(() {
-        setState(() {});
-      });
+  _openGallary(BuildContext context) async {
+    imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+    this.setState(() {});
+    Navigator.of(context).pop();
+  }
 
-    animationController.forward();
+  _openCamera(BuildContext context) async {
+    imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+    this.setState(() {});
+    Navigator.of(context).pop();
+  }
 
+  _openGallary2(BuildContext context) async {
+    imageFile2 = await ImagePicker.pickImage(source: ImageSource.gallery);
+    this.setState(() {});
+    Navigator.of(context).pop();
+  }
+
+  _openCamera2(BuildContext context) async {
+    imageFile2 = await ImagePicker.pickImage(source: ImageSource.camera);
+    this.setState(() {});
+    Navigator.of(context).pop();
+  }
+
+  Future<void> _showChoiceDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Make a choice"),
+            content: SingleChildScrollView(
+                child: ListBody(
+              children: [
+                GestureDetector(
+                  child: Text("Gallary"),
+                  onTap: () {
+                    _openGallary(context);
+                  },
+                ),
+                Padding(padding: EdgeInsets.all(8.0)),
+                GestureDetector(
+                  child: Text("Camera"),
+                  onTap: () {
+                    _openCamera(context);
+                  },
+                ),
+              ],
+            )),
+          );
+        });
+  }
+
+  Future<void> _showChoiceDialog2(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Make a choice"),
+            content: SingleChildScrollView(
+                child: ListBody(
+              children: [
+                GestureDetector(
+                  child: Text("Gallary"),
+                  onTap: () {
+                    _openGallary2(context);
+                  },
+                ),
+                Padding(padding: EdgeInsets.all(8.0)),
+                GestureDetector(
+                  child: Text("Camera"),
+                  onTap: () {
+                    _openCamera2(context);
+                  },
+                ),
+              ],
+            )),
+          );
+        });
+  }
+
+  Widget _decideImage() {
+    if (imageFile == null) {
+      return Text('No selected!');
+    } else {
+      return Image.file(
+        imageFile,
+        width: 200,
+        height: 200,
+      );
+    }
+  }
+
+  Widget _decideImage2() {
+    if (imageFile2 == null) {
+      return Text('No selected!');
+    } else {
+      return Image.file(
+        imageFile2,
+        width: 200,
+        height: 200,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-
-        Align(
-          alignment: AlignmentDirectional(0,0.7),
-          child: Transform.translate(
-            offset: Offset(0, animation.value),
-            child: Container(
-              height: 250,
-              width: 170,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/logo0.png'),
-                  )),
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Main'),
+      ),
+      body: Container(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _decideImage(),
+              _decideImage2(),
+              RaisedButton(
+                onPressed: () {
+                  _showChoiceDialog(context);
+                  _showChoiceDialog2(context);
+                },
+                child: Text("Select Image"),
+              ),
+            ],
           ),
         ),
-        Align(
-          alignment: AlignmentDirectional.bottomCenter,
-          child: RaisedButton(
-            onPressed: () {
-              animationController.forward();
-            },
-            child: Text('Go'),
-            color: Colors.red,
-            textColor: Colors.yellowAccent,
-            shape: BeveledRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20))),
-          ),
-        )
-      ],
+      ),
     );
-  }
-
-  @override
-  void dispose() {
-    animationController.dispose();
-    super.dispose();
   }
 }
