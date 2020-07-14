@@ -40,6 +40,12 @@ dependencies:
   firebase_storage: ^3.1.6
   image_picker: ^0.6.7+3
   image_cropper: ^1.2.3
+  flutter_launcher_icons: "^0.7.3"
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo0.png"
 
 
 

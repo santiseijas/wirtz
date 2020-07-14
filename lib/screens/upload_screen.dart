@@ -88,24 +88,25 @@ class _SubirImagenState extends State<SubirImagen> {
             ],
           ),
           Text(
-              'Tiene que ser por las dos partes y que se ven bien los datos'
+              'Tiene que ser por las dos partes y verse bien los datos'
                   .toUpperCase(),
               textAlign: TextAlign.center,
               style: GoogleFonts.patuaOne(
                   fontSize: 23,
                   fontStyle: FontStyle.italic,
                   color: Colors.black)),
+          SizedBox(height: 30,),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              MyButton(color: Colors.indigoAccent,
+              MyButton(color: Colors.indigo,
                 onPressed: () {
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Parte de alante'),
+                          title: Text('Parte de delante'),
                           actions: <Widget>[
                             Column(
                               children: <Widget>[
@@ -153,9 +154,9 @@ class _SubirImagenState extends State<SubirImagen> {
                         );
                       });
                 },
-                text: 'parte de alante',
+                text: 'delante',
               ),
-              MyButton(
+              MyButton(color: Colors.indigo,
                 onPressed: () {
                   showDialog(
                       context: context,
@@ -209,7 +210,7 @@ class _SubirImagenState extends State<SubirImagen> {
                         );
                       });
                 },
-                text: 'parte de atras',
+                text: 'detras',
               ),
             ],
           ),SizedBox(height: 20,),

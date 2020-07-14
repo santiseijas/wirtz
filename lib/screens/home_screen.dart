@@ -9,7 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:wirtz/models/markers_repository.dart';
 import 'package:wirtz/models/user_repository.dart';
-import 'package:wirtz/screens/ajustes_screen.dart';
+import 'package:wirtz/screens/upload_screen.dart';
 import 'package:wirtz/widgets/appBar.dart';
 import 'package:wirtz/widgets/dialog.dart';
 import 'package:wirtz/widgets/drawer.dart';
